@@ -1,13 +1,9 @@
-window.MELI_APARTMENT_STYLE={palette:{bedroom:0x36b7a5,bathroom:0x3aa9d8,kitchen:0x3349a7,living:0xf2d5ad,hall:0xe9d78d,wall:0xf7f1e8,wood:0xa56b42,green:0x82a93e,purple:0x6652bd},rooms:{bedroom:{label:'Chambre',floor:0x76d4c7},bathroom:{label:'Salle de bains',floor:0xb8e3ee},kitchen:{label:'Cuisine',floor:0x9aa8df},living:{label:'Séjour',floor:0xf0d6b4},hall:{label:'Entrée',floor:0xe9dc9c}}};
+window.MELI_APARTMENT_STYLE={palette:{bedroom:0x35b7a5,bathroom:0x3aa9d8,kitchen:0x414bb2,living:0xf0cfaa,hall:0xe7d47d,wall:0xf7f1e8,wood:0xa56b42,green:0x82a93e,purple:0x6652bd,coral:0xe58a67},rooms:{bedroom:{label:'Chambre',floor:0x76d4c7},bathroom:{label:'Salle de bains',floor:0xb8e3ee},kitchen:{label:'Cuisine',floor:0xaab1e4},living:{label:'Séjour',floor:0xf0d6b4},hall:{label:'Entrée',floor:0xe9dc9c}}};
+window.MELI_ROOM_ZONES=[{id:'chambre',p:[-4.2,.01,-3.8],s:[5.2,.03,5.4],c:0x76d4c7},{id:'sdb',p:[3.8,.012,-4.5],s:[5.2,.035,4],c:0xb8e3ee},{id:'salon',p:[-2.6,.014,2.8],s:[7.6,.04,5.6],c:0xf0d6b4},{id:'cuisine',p:[4.8,.016,2.7],s:[4.2,.045,5.7],c:0xaab1e4},{id:'entree',p:[.4,.018,5.6],s:[2.2,.05,1.7],c:0xe9dc9c}];
 window.MELI_FURNITURE=[
-{id:'bed_main',kind:'bed',room:'chambre',p:[-4.4,.38,-3.6],s:[2.5,.75,1.65],c:0x8e9f36,solid:true},
-{id:'wardrobe_main',kind:'wardrobe',room:'chambre',p:[-5.8,1,-5.55],s:[1.1,2,1.2],c:0xe7a44d,solid:true},
-{id:'desk_main',kind:'desk',room:'chambre',p:[-2.5,.48,-5.55],s:[1.35,.95,.65],c:0xe8d2aa,solid:true},
-{id:'vanity_main',kind:'vanity',room:'sdb',p:[2.6,.45,-5.65],s:[1.5,.9,.65],c:0xd5b18a,solid:true},
-{id:'shower_main',kind:'shower',room:'sdb',p:[5.6,.9,-5.1],s:[1.5,1.8,1.5],c:0x8ed6e8,solid:true},
-{id:'kitchen_line',kind:'kitchen',room:'cuisine',p:[5.4,.48,2.8],s:[2.4,.95,.7],c:0x7552bd,solid:true},
-{id:'kitchen_high',kind:'cabinet',room:'cuisine',p:[6.1,1.65,2.8],s:[.75,.75,.65],c:0xb18fd4,solid:true},
-{id:'sofa_main',kind:'sofa',room:'salon',p:[-2.8,.48,2.8],s:[2.7,.95,1.05],c:0xd89869,solid:true},
-{id:'coffee_main',kind:'table',room:'salon',p:[-.8,.34,2.7],s:[1.3,.15,.8],c:0xa87753,solid:true},
-{id:'bookcase_main',kind:'bookcase',room:'salon',p:[-5.7,1,5.6],s:[1.7,2,.45],c:0x8baa3c,solid:true}
+{id:'bed_main',kind:'bed',room:'chambre',p:[-4.3,.38,-3.5],s:[2.6,.75,1.7],c:0x86a238,solid:true},{id:'bed_pillow',kind:'pillow',room:'chambre',p:[-4.3,.8,-4.05],s:[1.15,.16,.42],c:0xf2e3d5},{id:'wardrobe_main',kind:'wardrobe',room:'chambre',p:[-5.8,1,-5.55],s:[1.1,2,1.2],c:0xe7a44d,solid:true},{id:'desk_main',kind:'desk',room:'chambre',p:[-2.35,.48,-5.5],s:[1.45,.95,.65],c:0xe8d2aa,solid:true},{id:'nightstand',kind:'table',room:'chambre',p:[-5.7,.38,-3.2],s:[.6,.75,.55],c:0xd39262,solid:true},
+{id:'vanity_main',kind:'vanity',room:'sdb',p:[2.6,.45,-5.65],s:[1.5,.9,.65],c:0xd5b18a,solid:true},{id:'mirror',kind:'mirror',room:'sdb',p:[2.6,1.65,-6.02],s:[1.2,.85,.05],c:0x8fd5e7},{id:'shower_main',kind:'shower',room:'sdb',p:[5.65,.9,-5.05],s:[1.55,1.8,1.55],c:0x8ed6e8,solid:true},{id:'wc_main',kind:'wc',room:'sdb',p:[4.2,.38,-3.35],s:[.65,.75,.85],c:0xf5f3ed,solid:true},
+{id:'kitchen_line',kind:'kitchen',room:'cuisine',p:[5.4,.48,2.8],s:[2.4,.95,.7],c:0x7552bd,solid:true},{id:'kitchen_high',kind:'cabinet',room:'cuisine',p:[6.1,1.65,2.8],s:[.75,.75,.65],c:0xb18fd4,solid:true},{id:'fridge_main',kind:'fridge',room:'cuisine',p:[5.95,1,5.55],s:[.9,2,.85],c:0xe6e9ea,solid:true},{id:'island_main',kind:'island',room:'cuisine',p:[3.9,.48,4.35],s:[1.8,.95,.75],c:0xe2d8ca,solid:true},
+{id:'sofa_main',kind:'sofa',room:'salon',p:[-3,.48,2.8],s:[2.8,.95,1.05],c:0xd89869,solid:true},{id:'coffee_main',kind:'table',room:'salon',p:[-.7,.34,2.7],s:[1.35,.15,.8],c:0xa87753,solid:true},{id:'bookcase_main',kind:'bookcase',room:'salon',p:[-5.75,1,5.55],s:[1.75,2,.45],c:0x8baa3c,solid:true},{id:'tv_main',kind:'tv',room:'salon',p:[-.2,1.1,.25],s:[1.5,.85,.12],c:0x242c35,solid:true},{id:'rug_main',kind:'rug',room:'salon',p:[-1.9,.03,3],s:[3.8,.04,2.5],c:0xd9a985},
+{id:'bike',kind:'bike',room:'entree',p:[-.5,.65,5.45],s:[1.25,1.3,.35],c:0x2985a7,solid:true},{id:'plant',kind:'plant',room:'salon',p:[-6,.65,1.2],s:[.55,1.3,.55],c:0x6d9b3b,solid:true}
 ];
