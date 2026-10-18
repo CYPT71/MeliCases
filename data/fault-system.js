@@ -7,6 +7,7 @@
     ventilation:{label:'Défaut de ventilation',category:'Confort',urgency:'Prioritaire',action:'Dégager les entrées d’air et demander un contrôle VMC',keywords:['air','vmc'],visual:'humidity',color:0x66d39e}
   };
   function enrich(question,index){const type=TYPES[question.topic]||TYPES.ventilation;return{...question,fault:{id:question.faultId||`PANNE-${index+1}`,topic:question.topic,room:question.room,label:type.label,category:type.category,urgency:type.urgency,action:type.action,keywords:type.keywords,visual:type.visual,color:type.color}}}
+  function actionsFor(fault){const alternatives=Object.values(TYPES).map(type=>type.action).filter(action=>action!==fault.action),offset=parseInt(String(fault.id).replace(/\D/g,''),10)||0;return[fault.action,alternatives[offset%alternatives.length],alternatives[(offset+2)%alternatives.length]].sort((a,b)=>((a.length+offset)%7)-((b.length+offset)%7))}
   function evaluate(report,faults){
     const observation=String(report.observation||'').trim(),action=String(report.action||'').toLocaleLowerCase('fr');
     const roomNames={sdb:'salle de bains',entree:'entrée',wc:'wc',cuisine:'cuisine',salon:'salon',chambre:'chambre'},reportedRoom=String(report.room||'').toLocaleLowerCase('fr');
@@ -17,5 +18,5 @@
     if(!checks.roomAndType)errors.push('La pièce et la nature ne correspondent à aucune panne constatée.');if(!checks.urgency)errors.push(`Le niveau d’urgence attendu est « ${match?.urgency||faults[0]?.urgency} ».`);if(!checks.observation)errors.push('Le constat doit décrire des faits observables en au moins 25 caractères.');if(!checks.action)errors.push(`La mesure conservatoire doit notamment prévoir : ${match?.action||faults[0]?.action}.`);
     return{valid:score===100,score,checks,errors,matchedFault:match?.id||null};
   }
-  g.MeliFaultSystem={TYPES,enrich,evaluate};
+  g.MeliFaultSystem={TYPES,enrich,actionsFor,evaluate};
 })(window);

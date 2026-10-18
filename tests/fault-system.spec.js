@@ -1,5 +1,15 @@
 const {test,expect}=require('@playwright/test');
 
+test('une panne impose une mesure conservatoire avant le diagnostic',async({page})=>{
+  await page.goto('/game.html?level=3&seed=ACTION-01');
+  await page.evaluate(()=>window.__MELI_TEST__.openFirstFault());
+  await expect(page.locator('.safety-action')).toHaveCount(3);
+  await page.locator('.answer').first().click();
+  await expect(page.locator('#validateAnswer')).toBeDisabled();
+  await page.locator('.safety-action').first().click();
+  await expect(page.locator('#validateAnswer')).toBeEnabled();
+});
+
 test('la fiche incident est évaluée contre les pannes réellement générées',async({page})=>{
   await page.goto('/game.html?level=3&seed=RAPPORT-01');
   const fault=await page.evaluate(()=>window.__MELI_TEST__.campaign.questions[0].fault);

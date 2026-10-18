@@ -14,6 +14,12 @@ test('le plan 3D partage murs, ouvertures, portes et fenêtres',async({page})=>{
   expect(architecture.exteriorScenes).toBe(2);
   expect(architecture.textures).toBeGreaterThanOrEqual(15);
 });
+test('les impostes ferment entièrement le vide au-dessus des portes',async({page})=>{
+  await page.goto('/game.html?seed=OVERDOORS');
+  for(const id of['frame_bedroom','frame_bathroom','opening_living_kitchen']){
+    expect(await page.evaluate(name=>window.__MELI_TEST__.sceneHas(`${name}_overdoor`),id)).toBe(true);
+  }
+});
 
 test('les fenêtres montrent des décors image et chaque zone dispose d’un plafond éclairé',async({page})=>{
   await page.goto('/game.html?seed=INTERIOR-COHERENCE');
