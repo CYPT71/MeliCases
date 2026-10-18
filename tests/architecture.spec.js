@@ -50,3 +50,16 @@ test('les ouvertures intérieures restent franchissables',async({page})=>{
   expect(probes).toHaveLength(3);
   for(const probe of probes)expect(probe.blocked).toBeFalsy();
 });
+
+test('les raccords sensibles disposent de couvre-joints non coplanaires',async({page})=>{
+  await page.goto('/game.html?seed=SEALED-JOINTS');
+  const result=await page.evaluate(()=>({
+    count:MELI_JOINERY.length,
+    missing:MELI_JOINERY.filter(item=>!__MELI_TEST__.sceneHas(item.id)).map(item=>item.id),
+    cornices:MELI_JOINERY.filter(item=>item.id.startsWith('cornice_')).length,
+    thresholds:MELI_JOINERY.filter(item=>item.id.startsWith('threshold_')).length,
+    sills:MELI_JOINERY.filter(item=>item.id.startsWith('sill_')).length,
+    positiveThickness:MELI_JOINERY.every(item=>item.s.every(size=>size>0))
+  }));
+  expect(result).toEqual({count:11,missing:[],cornices:4,thresholds:3,sills:4,positiveThickness:true});
+});

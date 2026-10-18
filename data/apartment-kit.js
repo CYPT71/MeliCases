@@ -73,6 +73,21 @@ window.MELI_ARCHITECTURE={
 // Plafond continu et éclairage domestique coordonné à l'implantation de référence.
 window.MELI_CEILINGS=[{id:'ceiling_continuous',p:[0,3.01,0],s:[13.8,.08,13.8]}];
 window.MELI_SUBFLOOR={id:'subfloor_continuous',p:[0,-.055,0],s:[13.8,.1,13.8],color:0xd8cdbb};
+// Pièces de finition réellement modélisées. Elles masquent les micro-jours liés
+// à la précision WebGL/Safari au lieu de compter sur des faces coplanaires.
+window.MELI_JOINERY=[
+ {id:'cornice_north',p:[0,2.92,-6.64],s:[13.35,.12,.16],surface:'plaster',color:0xeee8de},
+ {id:'cornice_south',p:[0,2.92,6.64],s:[13.35,.12,.16],surface:'plaster',color:0xeee8de},
+ {id:'cornice_west',p:[-6.64,2.92,0],s:[.16,.12,13.35],surface:'plaster',color:0xeee8de},
+ {id:'cornice_east',p:[6.64,2.92,0],s:[.16,.12,13.35],surface:'plaster',color:0xeee8de},
+ {id:'threshold_bedroom',p:[-.8,.045,-1.45],s:[.3,.035,1.18],surface:'wood',color:0xb99368},
+ {id:'threshold_bathroom',p:[1,.047,-1.95],s:[.3,.035,1.18],surface:'wood',color:0xb99368},
+ {id:'threshold_living_kitchen',p:[0,.05,5.35],s:[.3,.035,1.38],surface:'terrazzo',color:0xd8cdbb},
+ {id:'sill_bedroom',p:[-4.35,.94,-6.55],s:[2.38,.08,.28],surface:'wood',color:0xc69b70},
+ {id:'sill_bathroom',p:[4.55,1.31,-6.55],s:[1.68,.08,.28],surface:'tile',color:0xe4edf0},
+ {id:'sill_living',p:[-6.55,.91,3.25],s:[.28,.08,2.58],surface:'wood',color:0xc69b70},
+ {id:'sill_kitchen',p:[6.55,1.01,3.3],s:[.28,.08,1.98],surface:'tile',color:0xe4edf0}
+];
 window.MELI_CEILING_LIGHTS=[
   {id:'light_bedroom',p:[-3.75,2.82,-3.45],color:0xffd7a1,intensity:10,distance:6},
   {id:'light_bathroom',p:[3.65,2.82,-5.0],color:0xe5f5ff,intensity:9,distance:5},
