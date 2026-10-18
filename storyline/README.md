@@ -8,12 +8,9 @@ Storyline 360 reste l’outil auteur du module final. Le jeu WebGL MeliCases est
 
 1. Héberger le jeu WebGL sur un serveur HTTPS ou l’intégrer comme Web Object selon le mode de déploiement retenu.
 2. Dans Storyline 360, créer une scène `Escape Logement` avec une slide contenant le Web Object.
-3. Créer les variables Storyline suivantes :
-   - `EscapeScore` (Number, 0)
-   - `EscapeSolved` (Number, 0)
-   - `EscapeCompleted` (True/False, False)
-   - `EscapeSeed` (Text, vide)
-   - `EscapeLastCase` (Text, vide)
+3. Créer les variables Storyline documentées dans `VARIABLES.md`. Les variables
+   `Escape*` historiques restent alimentées, mais les nouvelles variables `Meli*`
+   permettent le suivi détaillé, la reprise et le débrief.
 4. Utiliser `storyline/bridge.js` comme référence pour la communication entre le jeu et le player Storyline lorsque le contexte d’hébergement autorise l’accès au parent.
 5. Dans Storyline, baser la validation de la séquence sur `EscapeCompleted = True`.
 6. Publier ensuite le projet Storyline vers le LMS dans le format demandé par le client (SCORM/xAPI/cmi5 selon l’environnement).
@@ -30,13 +27,29 @@ Ainsi, une même session reste reproductible avec sa graine, tandis qu’une nou
 
 ## Variables et événements
 
-Le jeu envoie les événements suivants :
+Le jeu envoie les événements suivants via `CustomEvent` et `postMessage` :
 - `melicases:ready`
-- `melicases:caseSolved`
+- `melicases:decision`
 - `melicases:progress`
+- `melicases:suspend`
 - `melicases:completed`
+- `melicases:state`
 
-La couche Storyline peut convertir ces événements en variables via `GetPlayer().SetVar(...)`.
+La passerelle convertit directement ces événements en variables avec
+`GetPlayer().SetVar(...)`. La slide peut aussi envoyer `pause`, `resume`, `reset`
+ou `request-state` au Web Object. Voir `trigger-snippets.js`.
+
+## Reprise de session
+
+Chaque décision sérialise l’état dans `MeliSuspendData`. Storyline peut conserver
+cette variable lors d’une reprise LMS. Au lancement, `getLaunchData()` expose la
+graine, la difficulté, le nom de l’apprenant et les données suspendues au jeu.
+
+## Validation de la slide
+
+Le résultat est prêt lorsque `MeliCompleted = True`. `MeliPassed` applique le seuil
+du serious game, tandis que `MeliScore`, `MeliSafety`, `MeliXP` et `MeliProgress`
+alimentent l’écran de débrief ou les rapports LMS.
 
 ## Publication
 
