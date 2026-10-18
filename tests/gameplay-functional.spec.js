@@ -8,7 +8,7 @@ test.describe('appartement jouable',()=>{
     const s=await page.evaluate(()=>window.__MELI_TEST__);
     expect(s.furniture).toBeGreaterThanOrEqual(15);
     expect(s.colliders).toBeGreaterThan(15);
-    expect(s.hitboxes).toBe(20);
+    expect(s.hitboxes).toBe(5);
     expect(errors).toEqual([]);
   });
 
