@@ -34,13 +34,19 @@ test.describe('appartement jouable',()=>{
   test('le mode course déplace plus vite que la marche',async({page})=>{
     await page.goto('/game.html?seed=FUNCTIONAL-RUN');
     await page.click('#play');
-    const start=await page.evaluate(()=>window.__MELI_TEST__.position);
-    await page.keyboard.down('KeyW');await page.waitForTimeout(250);await page.keyboard.up('KeyW');
-    const walk=await page.evaluate(()=>window.__MELI_TEST__.position);
-    await page.evaluate(()=>window.__MELI_TEST__.teleport(0,6));
-    await page.keyboard.down('ShiftLeft');await page.keyboard.down('KeyW');await page.waitForTimeout(250);await page.keyboard.up('KeyW');await page.keyboard.up('ShiftLeft');
-    const run=await page.evaluate(()=>window.__MELI_TEST__.position);
-    const dw=Math.hypot(walk.x-start.x,walk.z-start.z),dr=Math.hypot(run.x,run.z-6);
-    expect(dr).toBeGreaterThan(dw*1.25);
+    const measure=async run=>{
+      await page.evaluate(()=>window.__MELI_TEST__.teleport(.4,5.7));
+      const before=await page.evaluate(()=>window.__MELI_TEST__.position);
+      if(run)await page.keyboard.down('ShiftLeft');
+      await page.keyboard.down('KeyW');
+      await page.waitForTimeout(180);
+      await page.keyboard.up('KeyW');
+      if(run)await page.keyboard.up('ShiftLeft');
+      const after=await page.evaluate(()=>window.__MELI_TEST__.position);
+      return Math.hypot(after.x-before.x,after.z-before.z);
+    };
+    const walk=await measure(false),run=await measure(true);
+    expect(walk).toBeGreaterThan(.15);
+    expect(run).toBeGreaterThan(walk*1.25);
   });
 });
