@@ -16,6 +16,23 @@ test('le tutoriel limite le parcours à trois situations guidées',async({page})
   expect(campaign.id).toBe(1);
   expect(campaign.total).toBe(3);
   await expect(page.locator('#selectedLevel')).toContainText('pas à pas');
+  await page.click('#play');
+  await expect(page.locator('#tutorialCoach')).toHaveClass(/open/);
+  await expect(page.locator('#tutorialCount')).toHaveText('Tutoriel · 1/6');
+  for(let step=2;step<=6;step++){await page.click('#nextTutorial');await expect(page.locator('#tutorialCount')).toHaveText(`Tutoriel · ${step}/6`)}
+  await page.click('#nextTutorial');
+  await expect(page.locator('#tutorialCoach')).not.toHaveClass(/open/);
+});
+
+test('le déplacement reste jouable sans verrouillage du pointeur et accepte Z',async({page})=>{
+  await page.goto('/game.html?level=2&seed=ACCESSIBLE');
+  await page.click('#play');
+  await page.evaluate(()=>document.exitPointerLock?.());
+  const before=await page.evaluate(()=>window.__MELI_TEST__.position);
+  await page.keyboard.down('KeyZ');await page.waitForTimeout(350);await page.keyboard.up('KeyZ');
+  const after=await page.evaluate(()=>window.__MELI_TEST__.position);
+  expect(Math.hypot(after.x-before.x,after.z-before.z)).toBeGreaterThan(.2);
+  await expect(page.locator('#interactButton')).toBeVisible();
 });
 
 test('le niveau 3 génère six pannes reproductibles et exige une fiche incident',async({page})=>{
