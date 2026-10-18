@@ -28,7 +28,7 @@ test('les meubles détaillés regardent leur zone d’usage et restent dans leur
   await page.goto('/game.html?seed=ORIENTATION');
   const result=await page.evaluate(()=>{
     const byId=id=>MELI_FURNITURE.find(item=>item.id===id);
-    const expected={sofa_main:'north',tv_main:'south',bookcase_main:'north',wardrobe_main:'east',fridge_main:'west',desk_main:'south',vanity_main:'south',wc_main:'north'};
+    const expected={sofa_main:'north',tv_main:'south',bookcase_main:'north',wardrobe_main:'east',fridge_main:'west',desk_main:'south',vanity_main:'south',shower_main:'south',wc_main:'north'};
     const wrongFacing=Object.entries(expected).filter(([id,facing])=>byId(id)?.facing!==facing);
     const outside=MELI_FURNITURE.filter(item=>{
       const room=MELI_ROOM_ZONES.find(zone=>zone.id===item.room);if(!room)return false;
@@ -40,4 +40,17 @@ test('les meubles détaillés regardent leur zone d’usage et restent dans leur
   expect(result.outside).toEqual([]);
   expect(Math.abs(result.sofaRotation-Math.PI)).toBeLessThan(.001);
   expect(Math.abs(result.tvRotation)).toBeLessThan(.001);
+});
+
+test('la douche est adossée aux deux murs de l’angle et ouverte vers la salle de bains',async({page})=>{
+  await page.goto('/game.html?seed=SHOWER-CORNER');
+  const shower=await page.evaluate(()=>{
+    const item=MELI_FURNITURE.find(x=>x.id==='shower_main');
+    return{east:item.p[0]+item.s[0]/2,north:item.p[2]-item.s[2]/2,facing:item.facing,mount:item.mount,rotation:__MELI_TEST__.furnitureRotation(item.id)};
+  });
+  expect(Math.abs(shower.east-6.685)).toBeLessThan(.03);
+  expect(Math.abs(shower.north+6.685)).toBeLessThan(.03);
+  expect(shower.mount).toBe('north-east');
+  expect(shower.facing).toBe('south');
+  expect(Math.abs(shower.rotation)).toBeLessThan(.001);
 });
