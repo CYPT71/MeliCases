@@ -1,0 +1,7 @@
+Bicycle by Poly by Google
+Source: https://poly.pizza/m/fvrGuzZjGu2
+License: Creative Commons Attribution 3.0
+License text: https://creativecommons.org/licenses/by/3.0/
+
+The model is redistributed locally in GLB form and normalized at runtime for use
+inside the MeliCases apartment. No authorship claim is made by MeliCases.
