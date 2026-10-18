@@ -1,0 +1,7 @@
+const{test,expect}=require('@playwright/test');
+async function director(page){await page.goto('/game.html');await page.addScriptTag({url:'/data/adaptive-director.js'})}
+const mastery=(score,seen=2)=>Object.fromEntries(['gaz','electricite','eau','chauffage','ventilation'].map(x=>[x,{score,seen}]));
+test('director escalates expert learner',async({page})=>{await director(page);const r=await page.evaluate(m=>new MeliAdaptiveDirector({cooldown:0}).evaluate({mastery:m},{safety:100,timeRemaining:900}),mastery(90));expect(r.type).toBe('escalate');expect(r.intensity).toBe(3)});
+test('director prioritizes safety remediation',async({page})=>{await director(page);const r=await page.evaluate(m=>new MeliAdaptiveDirector({cooldown:0}).evaluate({mastery:m},{safety:40,consecutiveErrors:3}),mastery(90));expect(r.type).toBe('safety-remediation')});
+test('director reinforces weak learner',async({page})=>{await director(page);const m=mastery(70);m.gaz.score=20;const r=await page.evaluate(m=>new MeliAdaptiveDirector({cooldown:0}).evaluate({mastery:m},{safety:90}),m);expect(r.type).toBe('reinforce');expect(r.topic).toBe('gaz')});
+test('director builds scenario mutations',async({page})=>{await director(page);const r=await page.evaluate(()=>new MeliAdaptiveDirector().plan({type:'escalate',topic:'gaz',intensity:3},[{id:1,topic:'gaz'},{id:2,topic:'gaz'},{id:3,topic:'eau'}]));expect(r.questionIds).toEqual([1,2]);expect(r.mutations).toContain('add-dependent-fault')});
