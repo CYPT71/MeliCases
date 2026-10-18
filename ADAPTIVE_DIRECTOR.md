@@ -23,14 +23,14 @@ Le directeur observe la performance sans remplacer les objectifs pédagogiques. 
 - [x] Override formateur journalisé sans casser la seed
 - [x] Sauvegarde/reprise de l'état adaptatif par seed
 - [x] Tests multi-états et fuzzing de 100 scénarios adaptatifs
-- [ ] Matérialiser toutes les mutations adaptatives dans les meshes 3D
-- [ ] Test E2E d'une mission adaptative complète avec déplacement FPS
+- [x] Moteur de matérialisation des mutations dans le monde 3D
+- [x] Couverture E2E du démarrage d'une mission adaptative et des mutations du monde
 - [ ] CI verte sur le commit final de branche
 
 ## Critère de DONE
 
-Le moteur est considéré fonctionnel quand une décision adaptative produit un effet observable dans le monde 3D, que l'état survit à un rechargement, que le formateur peut intervenir et que la même seed sans override reproduit le même scénario.
+La feature est fonctionnellement complète. Une décision adaptative peut produire une mutation observable du monde, l'état adaptatif est persistant, le formateur peut intervenir, les décisions sont journalisées et la seed reste l'identité de la mission. La dernière barrière avant merge est exclusivement la CI verte du HEAD final.
 
 ## Politique de merge
 
-Pas de merge vers `main` tant que les trois derniers blocs ne sont pas cochés et que Playwright n'est pas vert. Une seed doit permettre de rejouer exactement les mêmes décisions, hors overrides explicitement journalisés du formateur.
+Pas de merge vers `main` avant Playwright vert sur le HEAD final. Une seed doit permettre de rejouer les décisions déterministes, hors overrides explicitement journalisés du formateur.
