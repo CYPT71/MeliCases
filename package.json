@@ -1,1 +1,1 @@
-{"name":"melicases","private":true,"scripts":{"serve":"node server.js","test:e2e":"playwright test"},"devDependencies":{"@playwright/test":"^1.55.0"}}
+{"name":"melicases","private":true,"scripts":{"serve":"node server.js","test:e2e":"playwright test","test:safari":"playwright test tests/architecture.spec.js tests/overview.spec.js --browser=webkit"},"devDependencies":{"@playwright/test":"^1.55.0"}}

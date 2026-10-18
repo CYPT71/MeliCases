@@ -18,7 +18,9 @@ test('les impostes ferment entièrement le vide au-dessus des portes',async({pag
   await page.goto('/game.html?seed=OVERDOORS');
   for(const id of['frame_bedroom','frame_bathroom','opening_living_kitchen']){
     expect(await page.evaluate(name=>window.__MELI_TEST__.sceneHas(`${name}_overdoor`),id)).toBe(true);
+    expect(await page.evaluate(name=>window.__MELI_TEST__.sceneHas(`${name}_threshold`),id)).toBe(true);
   }
+  for(const id of['outer_north','bedroom_south','wet_hall_north','living_kitchen_north'])expect(await page.evaluate(name=>window.__MELI_TEST__.sceneHas(`${name}_ceiling_joint`),id)).toBe(true);
 });
 
 test('les fenêtres montrent des décors image et chaque zone dispose d’un plafond éclairé',async({page})=>{
