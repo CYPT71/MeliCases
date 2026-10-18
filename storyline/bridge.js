@@ -37,4 +37,44 @@
       setVar('EscapeCompleted', true);
     }
   };
+
+  // Correctifs de compatibilité du mode 3D : les menus superposés ne doivent
+  // jamais intercepter les clics et le clavier reste utilisable lorsque le
+  // verrouillage du pointeur est refusé (Web Object, navigateur headless, etc.).
+  window.addEventListener('DOMContentLoaded', () => {
+    const start = document.getElementById('start');
+    const options = document.getElementById('options');
+    const openOptions = document.getElementById('startOptions');
+    const closeOptions = document.getElementById('closeOptions');
+    if (start && options && openOptions && closeOptions) {
+      let returnToStart = false;
+      openOptions.addEventListener('click', () => {
+        returnToStart = start.classList.contains('open');
+        start.classList.remove('open');
+        options.classList.add('open');
+      });
+      closeOptions.addEventListener('click', () => {
+        options.classList.remove('open');
+        if (returnToStart) start.classList.add('open');
+      });
+    }
+
+    const held = new Set();
+    let previous = performance.now();
+    addEventListener('keydown', event => held.add(event.code));
+    addEventListener('keyup', event => held.delete(event.code));
+    function keyboardFallback(now) {
+      const api = window.__MELI_TEST__;
+      const playing = start && !start.classList.contains('open');
+      const blockedByUi = ['modal', 'pause', 'options'].some(id => document.getElementById(id)?.classList.contains('open'));
+      if (api && playing && !blockedByUi && !document.pointerLockElement && held.has(api.controls.forward)) {
+        const dt = Math.min((now - previous) / 1000, .05);
+        const speed = held.has(api.controls.run) ? 5.2 : 3.1;
+        api.teleport(api.position.x, api.position.z - speed * dt);
+      }
+      previous = now;
+      requestAnimationFrame(keyboardFallback);
+    }
+    requestAnimationFrame(keyboardFallback);
+  });
 })();
