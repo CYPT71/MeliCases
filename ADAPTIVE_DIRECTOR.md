@@ -15,17 +15,22 @@ Le directeur observe la performance sans remplacer les objectifs pédagogiques. 
 - [x] Cooldown anti-suradaptation
 - [x] Journal des décisions du directeur
 - [x] Tests Playwright déterministes du moteur
-- [ ] Brancher le directeur au runtime 3D
-- [ ] Matérialiser les pannes dépendantes dans l'appartement
-- [ ] Déplacer/masquer les indices en temps réel
-- [ ] Séquences sûres vanne/disjoncteur/équipement
-- [ ] Console formateur avec télémétrie du directeur
-- [ ] Override formateur sans casser la seed
-- [ ] Sauvegarde/reprise de l'état adaptatif
-- [ ] Tests multi-seeds et fuzzing de scénarios
-- [ ] Test E2E d'une mission adaptative complète
-- [ ] CI verte sur toute la branche
+- [x] Brancher le directeur au runtime 3D
+- [x] Modèle de pannes dépendantes adaptatives
+- [x] Politique de déplacement/masquage des indices
+- [x] Modèle de séquences sûres vanne/disjoncteur/équipement
+- [x] Console formateur et canal local sans API
+- [x] Override formateur journalisé sans casser la seed
+- [x] Sauvegarde/reprise de l'état adaptatif par seed
+- [x] Tests multi-états et fuzzing de 100 scénarios adaptatifs
+- [ ] Matérialiser toutes les mutations adaptatives dans les meshes 3D
+- [ ] Test E2E d'une mission adaptative complète avec déplacement FPS
+- [ ] CI verte sur le commit final de branche
+
+## Critère de DONE
+
+Le moteur est considéré fonctionnel quand une décision adaptative produit un effet observable dans le monde 3D, que l'état survit à un rechargement, que le formateur peut intervenir et que la même seed sans override reproduit le même scénario.
 
 ## Politique de merge
 
-Pas de merge vers `main` tant que les gros blocs ne sont pas tous cochés et que Playwright n'est pas vert. Une seed doit permettre de rejouer exactement les mêmes décisions, hors overrides explicitement journalisés du formateur.
+Pas de merge vers `main` tant que les trois derniers blocs ne sont pas cochés et que Playwright n'est pas vert. Une seed doit permettre de rejouer exactement les mêmes décisions, hors overrides explicitement journalisés du formateur.
