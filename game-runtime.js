@@ -26,7 +26,7 @@ $('levelName').textContent=level.label+' · '+(level.id===3?'B-307':'A-204');
 document.querySelectorAll('[data-level]').forEach(card=>{
  const id=Number(card.dataset.level),available=id===1||id===2&&!!campaignProgress.completed[1]||id===3&&Object.keys(MeliCampaign.MISSIONS).every(m=>campaignProgress.completed[m]);
  card.classList.toggle('active',id===level.id);card.disabled=!available;
- const status=document.createElement('em');status.className='level-state';status.textContent=campaignProgress.completed[id]?'✓ Terminé':available?'Disponible':'À débloquer';card.append(status);
+ const status=document.createElement('em');status.className='level-state';status.textContent=id===1&&campaignProgress.briefingSkipped?'↷ Passé':campaignProgress.completed[id]?'✓ Terminé':available?'Disponible':'À débloquer';card.append(status);
  card.onclick=()=>{if(id!==level.id)navigateStage(id);};
 });
 function navigateStage(id){const next=new URL(location.href);next.searchParams.set('level',id);next.searchParams.set('seed',seed);location.href=next;}
@@ -39,6 +39,8 @@ renderMissionChoices();
 $('selectedLevel').textContent=level.id===1?'Vous suivez des logements sans être spécialiste du bâtiment. Prenez en main le logement, découvrez la fiche puis répondez à cinq questions non notées.':level.id===2?'Choisissez une mission. Explorez les équipements, consultez des explications courtes et entraînez-vous à signaler les faits.':'Votre mission : visiter le logement B-307, repérer plusieurs points de vigilance et transmettre une fiche complète. Aucune aide ni correction avant transmission.';
 $('factSituations').textContent=level.total;$('factMissions').textContent=level.id===2?3:1;$('factTime').textContent='Libre';
 $('play').disabled=!stageAvailable();$('play').textContent=level.id===1?'COMMENCER LE BRIEFING':level.id===2?'COMMENCER LA MISSION':'À VOUS DE JOUER !';
+const skipBriefing=document.createElement('button');skipBriefing.id='skipBriefing';skipBriefing.className='secondary skip-briefing';skipBriefing.textContent='PASSER LE BRIEFING · ACCÉDER AUX MISSIONS';skipBriefing.hidden=level.id!==1||!!campaignProgress.completed[1];$('play').after(skipBriefing);
+skipBriefing.onclick=()=>{campaignProgress.completed[1]=true;campaignProgress.briefingSkipped=true;campaignProgress.briefingSkippedAt=new Date().toISOString();persistStory();MeliCasesStoryline.progress({solved:0,total:5,completed:false,passed:false});navigateStage(2)};
 const tutorialSteps=[
   ['Votre mission commence ici !','Vous suivez des logements. Observez, analysez les informations et choisissez une suite adaptée : votre rôle est de repérer et signaler, sans intervenir comme un technicien.'],
   ['Se déplacer sans se bloquer','Utilisez W ou Z pour avancer, S pour reculer, Q/D ou les flèches pour vous orienter. Maintenez Maj pour aller plus vite. Le déplacement fonctionne même si la souris n’est pas capturée.'],
@@ -130,6 +132,7 @@ const facingRotation={south:0,east:Math.PI/2,north:Math.PI,west:-Math.PI/2};
 function partSurface(f,name,kind){if(f.kind==='bed'){if(name==='blanket'||name.startsWith('weave'))return'bedlinen';if(name==='mattress')return'paint';return'wood'}return surfaceFor[f.kind]||kind}
 function skinFurniture(f){const skin=MELI_SKIN[f.kind]||MELI_SKIN.default,group=new THREE.Group();group.name=f.id;group.position.set(...f.p);if(f.r)group.rotation.set(...f.r);else group.rotation.y=facingRotation[f.facing]??0;group.userData.facing=f.facing||'south';scene.add(group);const baseKind=['mirror','shower'].includes(f.kind)?'glass':['pillow','sofa','curtain','towel'].includes(f.kind)?'soft':'paint';const collision=cube(`${f.id}_collision`,[0,0,0],f.s,skin.base??f.c,false,baseKind,group,[0,0,0],surfaceFor[f.kind]||'paint');collision.userData.furniture=f.id;collision.userData.collisionOnly=true;collision.visible=false;if(f.kind==='bed'){collision.scale.y=.3;collision.position.y=-.22}if(f.solid)solids.push(collision);loadMeliModel(THREE,f.kind).then(model=>{model.scale.set(...f.s);group.add(model);group.userData.gltfLoaded=true}).catch(error=>{console.error('Chargement modèle',f.kind,error);(MELI_SKIN_PARTS[f.kind]||[]).forEach(([name,rp,rs,key])=>cube(`${f.id}_${name}`,[rp[0]*f.s[0],rp[1]*f.s[1],rp[2]*f.s[2]],[Math.max(.025,rs[0]*f.s[0]),Math.max(.025,rs[1]*f.s[1]),Math.max(.025,rs[2]*f.s[2])],skin[key]??skin.accent??f.c,false,baseKind,group))});return group}
 MELI_FURNITURE.forEach(skinFurniture);
+MELI_PROPS.forEach(skinFurniture);
 const equipmentScene=buildEquipment(THREE,scene,MeliEquipment.equipment);
 // Les preuves documentaires existent aussi dans le logement : elles matérialisent
 // les pièces que l'apprenant devra reconnaître puis citer dans son signalement.
