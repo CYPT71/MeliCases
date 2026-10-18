@@ -7,7 +7,8 @@ test('le plan 3D partage murs, ouvertures, portes et fenêtres',async({page})=>{
   expect(architecture.openings).toBe(3);
   expect(architecture.doors).toBe(2);
   expect(architecture.windows).toBe(4);
-  expect(architecture.ceilings).toBe(6);
+  expect(architecture.ceilings).toBe(1);
+  expect(architecture.subfloor).toBe(1);
   expect(architecture.ceilingLights).toBe(6);
   expect(architecture.exteriorScenes).toBe(2);
   expect(architecture.textures).toBeGreaterThanOrEqual(15);
@@ -23,7 +24,7 @@ test('les fenêtres montrent des décors image et chaque zone dispose d’un pla
     windowScenes:MELI_ARCHITECTURE.windows.map(item=>item.exterior),
     sceneObjects:['light_bedroom','light_bathroom','light_living','light_kitchen','window_bedroom_exterior','window_kitchen_exterior'].map(id=>window.__MELI_TEST__.sceneHas(id))
   }));
-  expect(result.ceilings).toBe(6);
+  expect(result.ceilings).toBe(1);
   expect(result.lights).toBe(6);
   expect(result.accents).toBeGreaterThanOrEqual(6);
   expect(result.windowScenes).toEqual(expect.arrayContaining(['courtyard','rooftops']));
