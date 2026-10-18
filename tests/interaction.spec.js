@@ -1,0 +1,3 @@
+const{test,expect}=require('@playwright/test');
+test('le runtime expose des hitboxes interactives et un mapping clavier',async({page})=>{await page.goto('/game.html');await expect(page.locator('#play')).toBeVisible();const state=await page.evaluate(()=>({hitboxes:window.__MELI_TEST__?.hitboxes||0,controls:window.__MELI_TEST__?.controls||null}));expect(state.hitboxes).toBeGreaterThan(10);expect(state.controls.forward).toBeTruthy();});
+test('les hitboxes de debug peuvent être affichées',async({page})=>{await page.goto('/game.html?debugHitboxes=1');await page.click('#play');const n=await page.evaluate(()=>window.__MELI_TEST__?.visibleHitboxes||0);expect(n).toBeGreaterThan(10);});
