@@ -12,7 +12,7 @@ test.describe('serious game métier',()=>{
     await page.locator(`[data-choice="${result}"]`).click();await page.click('#validate');
     await expect(page.locator('.feedback.bad')).toBeVisible();
     await expect(page.getByText('Réponse attendue')).toBeVisible();
-    await expect(page.getByRole('button',{name:'Réessayer'})).toBeVisible();
+    await expect(page.getByRole('button',{name:'Corriger ma décision'})).toBeVisible();
   });
   test('explique aussi une bonne réponse',async({page})=>{
     const correct=await page.evaluate(()=>MELI_QUIZ_BANK.find(x=>x.topic==='gaz').correct);
@@ -20,5 +20,17 @@ test.describe('serious game métier',()=>{
     await page.click('#validate');
     await expect(page.locator('.feedback.ok')).toBeVisible();
     await expect(page.getByText('Référence métier')).toBeVisible();
+  });
+  test('met en scène observation, indice, confiance et conséquence',async({page})=>{
+    await expect(page.getByText('Observation terrain')).toBeVisible();
+    await page.click('#evidenceToggle');
+    await expect(page.getByText('NOTE', {exact:false})).toBeVisible();
+    await page.getByRole('button',{name:'Certain',exact:true}).click();
+    const correct=await page.evaluate(()=>MELI_QUIZ_BANK.find(x=>x.topic==='gaz').correct);
+    for(const i of correct)await page.locator(`[data-choice="${i}"]`).click();
+    await page.click('#validate');
+    await expect(page.getByText('Conséquence simulée')).toBeVisible();
+    await expect(page.locator('#xp')).not.toHaveText('0 XP');
+    expect(await page.evaluate(()=>localStorage.getItem('meli.serious.progress'))).toBeTruthy();
   });
 });
