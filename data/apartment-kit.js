@@ -50,8 +50,8 @@ window.MELI_ARCHITECTURE={
 };
 
 // Plafond continu et éclairage domestique coordonné à l'implantation de référence.
-window.MELI_CEILINGS=[{id:'ceiling_continuous',p:[0,3.01,0],s:[13.55,.08,13.55]}];
-window.MELI_SUBFLOOR={id:'subfloor_continuous',p:[0,-.055,0],s:[13.55,.1,13.55],color:0xd8cdbb};
+window.MELI_CEILINGS=[{id:'ceiling_continuous',p:[0,3.01,0],s:[13.8,.08,13.8]}];
+window.MELI_SUBFLOOR={id:'subfloor_continuous',p:[0,-.055,0],s:[13.8,.1,13.8],color:0xd8cdbb};
 window.MELI_CEILING_LIGHTS=[
   {id:'light_bedroom',p:[-3.75,2.82,-3.45],color:0xffd7a1,intensity:10,distance:6},
   {id:'light_bathroom',p:[3.65,2.82,-5.0],color:0xe5f5ff,intensity:9,distance:5},

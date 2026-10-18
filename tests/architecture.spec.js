@@ -8,6 +8,7 @@ test('le plan 3D partage murs, ouvertures, portes et fenêtres',async({page})=>{
   expect(architecture.doors).toBe(2);
   expect(architecture.windows).toBe(4);
   expect(architecture.ceilings).toBe(1);
+  expect(architecture.ceilingMaterial).toBe('MeshBasicMaterial');
   expect(architecture.subfloor).toBe(1);
   expect(architecture.ceilingLights).toBe(6);
   expect(architecture.exteriorScenes).toBe(2);

@@ -1,1 +1,65 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MeliCases Formateur</title><style>body{margin:0;background:#0b1118;color:#eef;font:15px system-ui}.wrap{max-width:1100px;margin:auto;padding:24px}h1{font-size:34px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.card{background:#121c28;border:1px solid #ffffff20;border-radius:14px;padding:18px}textarea,input,select,button{width:100%;margin:6px 0;padding:10px;background:#0a1018;color:#fff;border:1px solid #ffffff28;border-radius:8px}button{background:#ff6038;color:#111;font-weight:800;cursor:pointer}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.metric{background:#09101a;padding:12px;border-radius:8px;text-align:center}.metric b{font-size:25px;display:block}.ok{color:#4ade80}.warn{color:#fb923c}pre{max-height:260px;overflow:auto}@media(max-width:750px){.grid{grid-template-columns:1fr}.metrics{grid-template-columns:1fr 1fr}}</style></head><body><div class="wrap"><h1>Console <span style="color:#ff6038">Formateur</span></h1><div class="grid"><div class="card"><h2>Mission supervisée</h2><label>Seed de mission</label><input id="seed" value="AZERT-001"><label>Code de partie à 6 chiffres</label><input id="code" value="123456" maxlength="6"><button id="connectLocal">Connecter sur cet appareil</button><p>État : <b id="status">hors ligne</b></p><details><summary>Connexion WebRTC avancée</summary><button id="offer">Créer l'offre P2P</button><textarea id="local" rows="4"></textarea><textarea id="remote" rows="4" placeholder="Code réponse apprenant"></textarea><button id="answer">Valider la réponse</button></details></div><div class="card"><h2>Directeur adaptatif</h2><select id="topic"><option>gaz</option><option>electricite</option><option>eau</option><option>chauffage</option><option>ventilation</option></select><button id="force">Forcer le thème</button><button id="grant">Donner un indice adaptatif</button><button id="clear">Supprimer les pannes secondaires</button><button id="pauseLearner">Mettre en pause</button></div><div class="card"><h2>Créer une panne en direct</h2><select id="fault"><option value="fuite_eau">Fuite d'eau</option><option value="fuite_gaz">Fuite de gaz</option><option value="circuit_dangereux">Défaut électrique</option><option value="vmc_obstruee">VMC obstruée</option><option value="radiateur_froid">Radiateur froid</option></select><select id="room"><option>cuisine</option><option>sdb</option><option>wc</option><option>salon</option><option>chambre</option><option>entree</option></select><button id="spawn">Injecter la panne</button></div><div class="card"><h2>Metrics live</h2><div class="metrics"><div class="metric"><b id="mAnswered">0</b>réponses</div><div class="metric"><b id="mSafety">100</b>sécurité</div><div class="metric"><b id="mWeak">-</b>faible</div><div class="metric"><b id="mDirector">-</b>directeur</div></div><pre id="events"></pre></div></div></div><script src="p2p/session.js"></script><script src="data/trainer-channel.js"></script><script>const $=id=>document.getElementById(id);let ch;function recv(m){if(m.type==='telemetry'){const x=m.payload;$('mAnswered').textContent=x.done||x.answered||0;$('mSafety').textContent=x.safety??x.score?.safety??100;$('mWeak').textContent=x.weakest||'-';$('mDirector').textContent=x.plan?.type||'-';$('events').textContent=JSON.stringify(x,null,2)}}$('connectLocal').onclick=()=>{ch?.close();ch=new MeliTrainerChannel($('code').value);ch.on(recv);ch.send('trainer-ready',{seed:$('seed').value});$('status').textContent='connecté local';$('status').className='ok'};const send=(type,payload)=>ch?.send(type,{seed:$('seed').value,...payload});$('force').onclick=()=>send('override',{command:'force-topic',topic:$('topic').value});$('grant').onclick=()=>send('override',{command:'grant-hint',topic:$('topic').value});$('clear').onclick=()=>send('override',{command:'clear-secondary-faults'});$('pauseLearner').onclick=()=>send('command',{command:'pause'});$('spawn').onclick=()=>send('command',{command:'spawnFault',fault:$('fault').value,room:$('room').value});const p=new MeliPeer.PeerSession('trainer');p.onstatus=s=>$('status').textContent=s;p.onmessage=recv;$('offer').onclick=async()=>$('local').value=await p.createOffer();$('answer').onclick=async()=>await p.acceptAnswer($('remote').value.trim());</script></body></html>
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>MeliCases — Formateur</title>
+  <style>
+    :root{color-scheme:dark;--ink:#eef4f7;--muted:#9fb0bb;--panel:#121c28;--line:#ffffff20;--accent:#ff6038;--green:#4ade80}
+    *{box-sizing:border-box}body{margin:0;background:#0b1118;color:var(--ink);font:16px system-ui,sans-serif}.wrap{max-width:1050px;margin:auto;padding:32px 22px 64px}h1{font-size:34px;margin:0 0 24px}h1 span{color:var(--accent)}h2{margin-top:0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px}.connect{grid-column:1/-1;text-align:center}.connect p{color:var(--muted)}label{display:block;margin:8px 0 4px}input,select,button{width:100%;margin:6px 0;padding:12px;border:1px solid #ffffff28;border-radius:10px;background:#09111b;color:#fff;font:inherit}button{border:0;background:var(--accent);color:#111;font-weight:850;cursor:pointer}.code{max-width:360px;height:92px;margin:16px auto;font-size:52px;font-weight:900;letter-spacing:.3em;text-align:center;text-transform:uppercase;padding-left:.3em}.status{font-size:18px}.ok{color:var(--green)}.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.metric{background:#09111b;padding:14px 8px;border-radius:10px;text-align:center;color:var(--muted)}.metric b{display:block;color:#fff;font-size:26px}.activity{min-height:48px;padding:12px;border-radius:10px;background:#09111b;color:var(--muted)}@media(max-width:760px){.grid{grid-template-columns:1fr}.connect{grid-column:auto}.actions,.metrics{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>Console <span>Formateur</span></h1>
+    <div class="grid">
+      <section class="card connect">
+        <h2>Rejoindre la mission</h2>
+        <p>Saisissez le même code que celui affiché chez l’apprenant.</p>
+        <label for="code">Code — 4 lettres maximum</label>
+        <input class="code" id="code" value="MELI" maxlength="4" inputmode="text" autocomplete="off" spellcheck="false" aria-describedby="codeHelp">
+        <small id="codeHelp">Lettres uniquement</small>
+        <button id="connectLocal">SE CONNECTER</button>
+        <p class="status">État : <b id="status">hors ligne</b></p>
+      </section>
+
+      <section class="card">
+        <h2>Piloter la mission</h2>
+        <label for="topic">Thème prioritaire</label>
+        <select id="topic"><option>gaz</option><option>électricité</option><option>eau</option><option>chauffage</option><option>ventilation</option></select>
+        <div class="actions"><button id="force">PRIORISER</button><button id="grant">DONNER UN INDICE</button><button id="clear">CALMER LA SITUATION</button><button id="pauseLearner">METTRE EN PAUSE</button></div>
+      </section>
+
+      <section class="card">
+        <h2>Ajouter une situation</h2>
+        <label for="fault">Situation</label>
+        <select id="fault"><option value="fuite_eau">Fuite d’eau</option><option value="fuite_gaz">Fuite de gaz</option><option value="circuit_dangereux">Défaut électrique</option><option value="vmc_obstruee">VMC obstruée</option><option value="radiateur_froid">Radiateur froid</option></select>
+        <label for="room">Pièce</label>
+        <select id="room"><option>cuisine</option><option>sdb</option><option>wc</option><option>salon</option><option>chambre</option><option>entree</option></select>
+        <button id="spawn">AJOUTER</button>
+      </section>
+
+      <section class="card">
+        <h2>Progression</h2>
+        <div class="metrics"><div class="metric"><b id="mAnswered">0</b>réponses</div><div class="metric"><b id="mSafety">100</b>sécurité</div><div class="metric"><b id="mWeak">—</b>à revoir</div><div class="metric"><b id="mDirector">—</b>rythme</div></div>
+        <p class="activity" id="activity">En attente de la mission…</p>
+      </section>
+    </div>
+  </main>
+  <script src="data/trainer-channel.js"></script>
+  <script>
+    const $=id=>document.getElementById(id);let channel;
+    const normalize=value=>value.toUpperCase().replace(/[^A-Z]/g,'').slice(0,4);
+    $('code').addEventListener('keydown',event=>{if(event.key.length===1&&!/[a-z]/i.test(event.key))event.preventDefault()});
+    $('code').addEventListener('input',event=>event.target.value=normalize(event.target.value));
+    function receive(message){if(message.type!=='telemetry')return;const data=message.payload;$('mAnswered').textContent=data.done||data.answered||0;$('mSafety').textContent=data.safety??data.score?.safety??100;$('mWeak').textContent=data.weakest||'—';$('mDirector').textContent=data.plan?.type||'—';$('activity').textContent=`Mission active · ${data.done||data.answered||0} réponse(s) traitée(s)`}
+    $('connectLocal').onclick=()=>{const code=normalize($('code').value);if(!code){$('status').textContent='saisissez un code';return}$('code').value=code;channel?.close();channel=new MeliTrainerChannel(code);channel.on(receive);channel.send('trainer-ready',{});$('status').textContent=`connecté · ${code}`;$('status').className='ok'};
+    const send=(type,payload)=>channel?.send(type,payload);
+    $('force').onclick=()=>send('override',{command:'force-topic',topic:$('topic').value.normalize('NFD').replace(/[\u0300-\u036f]/g,'')});
+    $('grant').onclick=()=>send('override',{command:'grant-hint',topic:$('topic').value});
+    $('clear').onclick=()=>send('override',{command:'clear-secondary-faults'});
+    $('pauseLearner').onclick=()=>send('command',{command:'pause'});
+    $('spawn').onclick=()=>send('command',{command:'spawnFault',fault:$('fault').value,room:$('room').value});
+  </script>
+</body>
+</html>
