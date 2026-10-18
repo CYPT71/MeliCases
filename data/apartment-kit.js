@@ -29,12 +29,12 @@ window.MELI_ARCHITECTURE={
     {id:'bed_hall_south',p:[-.8,1.5,-.45],s:[.16,3,.9],finish:'paint'},
     {id:'wet_hall_north',p:[1,1.5,-4.65],s:[.16,3,4.3],finish:'tile'},
     {id:'wet_hall_south',p:[1,1.5,-.7],s:[.16,3,1.4],finish:'tile'},
-    {id:'living_kitchen_north',p:[0,1.5,2.35],s:[.16,3,4.7],finish:'paint'},
+    {id:'living_kitchen_north',p:[0,1.5,3.05],s:[.16,3,3.3],finish:'paint'},
     {id:'living_kitchen_south',p:[0,1.5,6.4],s:[.16,3,.8],finish:'paint'}
   ],
   doors:[
-    {id:'door_bedroom',p:[-.35,1.05,-1.95],s:[.9,2.1,.06],r:[0,Math.PI/2,0],c:0xb98558},
-    {id:'door_bathroom',p:[.55,1.05,-2.45],s:[.9,2.1,.06],r:[0,Math.PI/2,0],c:0xb98558}
+    {id:'door_bedroom',p:[-1.25,1.05,-2],s:[.9,2.1,.06],r:[0,0,0],c:0xb98558},
+    {id:'door_bathroom',p:[1.45,1.05,-2.5],s:[.9,2.1,.06],r:[0,0,0],c:0xb98558}
   ],
   openings:[
     {id:'frame_bedroom',axis:'x',center:[-.8,-1.45],width:1.1},
@@ -50,14 +50,8 @@ window.MELI_ARCHITECTURE={
 };
 
 // Plafond continu et éclairage domestique coordonné à l'implantation de référence.
-window.MELI_CEILINGS=[
-  {id:'ceiling_bedroom',p:[-3.75,3.01,-3.42],s:[5.9,.08,6.55]},
-  {id:'ceiling_bathroom',p:[3.82,3.01,-4.98],s:[5.55,.08,3.35]},
-  {id:'ceiling_wc',p:[4.9,3.01,-1.65],s:[3.45,.08,2.9]},
-  {id:'ceiling_hall',p:[.1,3.01,-3.4],s:[1.65,.08,6.5]},
-  {id:'ceiling_living',p:[-3.35,3.01,3.4],s:[6.55,.08,6.4]},
-  {id:'ceiling_kitchen',p:[3.4,3.01,3.4],s:[6.6,.08,6.4]}
-];
+window.MELI_CEILINGS=[{id:'ceiling_continuous',p:[0,3.01,0],s:[13.55,.08,13.55]}];
+window.MELI_SUBFLOOR={id:'subfloor_continuous',p:[0,-.055,0],s:[13.55,.1,13.55],color:0xd8cdbb};
 window.MELI_CEILING_LIGHTS=[
   {id:'light_bedroom',p:[-3.75,2.82,-3.45],color:0xffd7a1,intensity:10,distance:6},
   {id:'light_bathroom',p:[3.65,2.82,-5.0],color:0xe5f5ff,intensity:9,distance:5},
