@@ -32,9 +32,18 @@
 
   return `<figure class="motion-design" data-motion="${d.flow}"><figcaption id="${id}">${d.title}</figcaption><svg class="motion-diagram" viewBox="0 0 620 210" role="img" aria-labelledby="${id} ${id}-desc"><desc id="${id}-desc">${safe(d.caption)}</desc>${nodes}${links}${returnCircuit}<circle class="motion-particle" r="4" cx="0" cy="94"/></svg><p>${safe(d.caption)}</p><div class="motion-controls"><button type="button" class="secondary" data-motion-toggle aria-pressed="false">METTRE EN PAUSE</button><button type="button" class="secondary" data-motion-replay>REVOIR L’ANIMATION</button></div></figure>`;
  }
+ function process(){
+  const steps=[['👁','Observer'],['⌖','Localiser'],['◇','Analyser'],['↗','Transmettre']];
+  return `<div class="decision-map" aria-label="Méthode en quatre étapes">${steps.map(([icon,label],index)=>`<span style="--step:${index}"><i>${icon}</i><b>${label}</b>${index<3?'<em>→</em>':''}</span>`).join('')}</div>`;
+ }
+ function feedback(q,ok){
+  const title=ok?'Décision exploitable':'Information à consolider',tone=ok?'safe':'risk';
+  const nodes=ok?['Fait localisé','Contexte relevé','Signalement utile']:['Observation isolée','Hypothèse trop rapide','Revenir aux faits'];
+  return `<figure class="consequence-design ${tone}" aria-label="Conséquence de la réponse"><figcaption>${title}</figcaption><div>${nodes.map((node,index)=>`<span style="--step:${index}"><i>${index+1}</i>${safe(node)}</span>`).join('<b>→</b>')}</div><div class="consequence-meter"><i></i></div></figure>`;
+ }
  function wire(container){
   container.querySelectorAll('[data-motion-toggle]').forEach(button=>button.onclick=()=>{const figure=button.closest('.motion-design'),paused=figure.classList.toggle('motion-paused');button.setAttribute('aria-pressed',String(paused));button.textContent=paused?'REPRENDRE L’ANIMATION':'METTRE EN PAUSE';});
   container.querySelectorAll('[data-motion-replay]').forEach(button=>button.onclick=()=>{const figure=button.closest('.motion-design');figure.classList.remove('motion-paused');figure.querySelectorAll('[data-motion-toggle]').forEach(b=>{b.textContent='METTRE EN PAUSE';b.setAttribute('aria-pressed','false');});figure.querySelectorAll('svg *').forEach(el=>el.getAnimations().forEach(animation=>{animation.currentTime=0;}));});
  }
- g.MeliMotion={render,wire};
+ g.MeliMotion={render,process,feedback,wire};
 })(window);

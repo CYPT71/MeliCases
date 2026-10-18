@@ -20,6 +20,23 @@ test('réduction des animations et absence d’aide animée en finale',async({pa
  expect(await page.locator('.motion-flow').first().evaluate(el=>getComputedStyle(el).animationName)).toBe('none');
  await page.goto('/game.html?level=3');await page.click('#play');await page.evaluate(()=>__MELI_TEST__.openCase(301));await expect(page.locator('.motion-design')).toHaveCount(0);await expect(page.locator('#dialog h2')).toHaveText('Chaudière murale');
 });
+
+test('le briefing combine méthode animée, schéma métier et conséquence',async({page})=>{
+ await page.goto('/game.html?level=1&seed=VISUAL-BRIEFING');await page.click('#play');await page.click('#skipTutorial');
+ const q=await page.evaluate(()=>__MELI_TEST__.campaign.questions[0]);await page.evaluate(id=>__MELI_TEST__.openCase(id),q.id);
+ await expect(page.locator('.decision-map span')).toHaveCount(4);await expect(page.locator('.motion-design')).toBeVisible();
+ await page.locator(`[data-i="${q.correct[0]}"]`).click();await page.click('#validateAnswer');
+ await expect(page.locator('.consequence-design.safe')).toBeVisible();await expect(page.locator('.consequence-design span')).toHaveCount(3);
+});
+
+test('une erreur affiche une chaîne de conséquence avant la nouvelle tentative',async({page})=>{
+ await page.addInitScript(()=>localStorage.setItem('meli.story.progress.v1',JSON.stringify({schema:1,completed:{1:true},answers:{},draft:{}})));
+ await page.goto('/game.html?level=2&seed=VISUAL-RETRY');await page.click('#play');
+ const q=await page.evaluate(()=>__MELI_TEST__.campaign.questions.find(item=>item.mission==='securite'));
+ await page.evaluate(id=>{__MELI_TEST__.chooseMission('securite');__MELI_TEST__.openCase(id)},q.id);
+ const wrong=q.choices.findIndex((_,index)=>!q.correct.includes(index));await page.locator(`[data-i="${wrong}"]`).click();await page.click('#validateAnswer');
+ await expect(page.locator('.consequence-design.risk')).toBeVisible();await expect(page.locator('#retry')).toBeVisible();
+});
 test('un mur placé devant une cible empêche l’interaction à travers la paroi',async({page})=>{
  await page.goto('/game.html');const result=await page.evaluate(async()=>{
   const T=await import('/assets/vendor/three/three.module.js');const scene=new T.Scene(),camera=new T.PerspectiveCamera();camera.position.set(0,0,0);camera.lookAt(0,0,-3);camera.updateMatrixWorld();
