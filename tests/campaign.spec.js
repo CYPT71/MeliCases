@@ -19,8 +19,10 @@ test('le tutoriel limite le parcours à trois situations guidées',async({page})
   await page.click('#play');
   await expect(page.locator('#tutorialCoach')).toHaveClass(/open/);
   await expect(page.locator('#tutorialCount')).toHaveText('Tutoriel · 1/6');
-  for(let step=2;step<=6;step++){await page.click('#nextTutorial');await expect(page.locator('#tutorialCount')).toHaveText(`Tutoriel · ${step}/6`)}
   await page.click('#nextTutorial');
+  await expect(page.locator('#tutorialCount')).toHaveText('Tutoriel · 2/6');
+  await expect(page.locator('#nextTutorial')).toBeDisabled();
+  await page.click('#skipTutorial');
   await expect(page.locator('#tutorialCoach')).not.toHaveClass(/open/);
 });
 
@@ -41,6 +43,8 @@ test('le niveau 3 génère six pannes reproductibles et exige une fiche incident
   expect(first.total).toBe(6);
   expect(first.requiresIncidentReport).toBe(true);
   expect(new Set(first.questions.map(q=>q.id)).size).toBe(6);
+  expect(first.questions.every(q=>q.fault?.action&&q.fault?.urgency)).toBe(true);
+  expect(await page.evaluate(()=>window.__MELI_TEST__.physicalFaults)).toBe(6);
   await page.evaluate(()=>window.__MELI_TEST__.openIncidentReport());
   await expect(page.locator('#incident')).toHaveClass(/open/);
   await expect(page.locator('#incidentForm [required]')).toHaveCount(5);

@@ -20,6 +20,7 @@
     else if(id===2)questions=shuffle(bank,random);
     else questions=shuffle(bank,random).slice(0,6);
     questions=questions.map((question,index)=>({...question,room:question.room[Math.floor(random()*question.room.length)],order:index+1,mission:missionFor(question),faultId:`PANNE-${String(index+1).padStart(2,'0')}`}));
+    if(id===3&&g.MeliFaultSystem)questions=questions.map(g.MeliFaultSystem.enrich);
     return{...LEVELS[id],seed:String(seed),questions,total:questions.length,missions:Object.values(MISSIONS).map(mission=>({...mission,total:questions.filter(q=>q.mission===mission.id).length})).filter(m=>m.total),requiresIncidentReport:id===3,randomized:id===3};
   }
   g.MeliCampaign={LEVELS,MISSIONS,build,missionFor};
