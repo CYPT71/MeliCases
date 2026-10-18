@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MeliCases — Escape Game technique du logement</title>
+  <style>
+    :root{
+      --ink:#111827;
+      --paper:#f8fafc;
+      --panel:#ffffff;
+      --red:#b91c1c;
+      --orange:#ea580c;
+      --amber:#f59e0b;
+      --green:#166534;
+      --blue:#1d4ed8;
+      --line:#d1d5db;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--paper);color:var(--ink)}
+    .app{display:grid;grid-template-columns:minmax(0,1fr) 340px;min-height:100vh}
+    #scene{position:relative;min-height:100vh;background:#dbeafe}
+    canvas{display:block;width:100%;height:100vh}
+    .hud{position:absolute;inset:18px auto auto 18px;background:rgba(255,255,255,.92);backdrop-filter:blur(6px);padding:12px 14px;border:1px solid var(--line);border-radius:12px;max-width:390px;box-shadow:0 10px 30px rgba(0,0,0,.08)}
+    .hud strong{color:var(--red)}
+    aside{padding:22px;background:var(--panel);border-left:1px solid var(--line);overflow:auto}
+    h1{font-size:24px;margin:0 0 8px}
+    h2{font-size:17px;margin:20px 0 10px}
+    p{line-height:1.45}
+    .badge{display:inline-block;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;background:var(--red);color:white;border-radius:999px;padding:6px 9px}
+    .progress{height:10px;background:#e5e7eb;border-radius:999px;overflow:hidden;margin:8px 0 16px}
+    .progress>div{height:100%;width:0;background:linear-gradient(90deg,var(--orange),var(--red));transition:.25s}
+    .case{border:1px solid var(--line);border-left:6px solid var(--amber);padding:12px;border-radius:10px;margin:10px 0;background:#fff}
+    .case.done{border-left-color:var(--green);background:#f0fdf4}
+    .case h3{margin:0 0 6px;font-size:15px}
+    button{appearance:none;border:0;border-radius:9px;padding:10px 12px;font-weight:750;cursor:pointer;background:var(--ink);color:white}
+    button.secondary{background:#475569}
+    button.danger{background:var(--red)}
+    .answers{display:grid;gap:8px;margin-top:10px}
+    .answers button{background:#eef2ff;color:var(--ink);border:1px solid #c7d2fe;text-align:left}
+    .answers button:hover{background:#e0e7ff}
+    .feedback{margin-top:10px;padding:10px;border-radius:8px;background:#f8fafc;border:1px solid var(--line)}
+    .legend{font-size:13px;color:#475569}
+    .alert{color:var(--red);font-weight:800}
+    @media(max-width:900px){.app{grid-template-columns:1fr}.app aside{border-left:0;border-top:1px solid var(--line)}#scene,canvas{height:62vh;min-height:62vh}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <section id="scene">
+    <canvas id="c"></canvas>
+    <div class="hud">
+      <span class="badge">Mission 3D</span>
+      <p><strong>15 minutes avant l'état des lieux.</strong> Repérez les anomalies du logement, prenez la bonne décision métier et déverrouillez la porte de sortie.</p>
+      <div class="legend">Cliquez sur les objets qui pulsent dans la scène. Les couleurs de sécurité sont volontairement très marquées.</div>
+    </div>
+  </section>
+  <aside>
+    <h1>MeliCases</h1>
+    <p>Mini escape game technique du logement. Prototype WebGL destiné à matérialiser un synopsis avant intégration dans Storyline 360.</p>
+    <h2>Progression</h2>
+    <div class="progress"><div id="bar"></div></div>
+    <div id="status">0 / 5 anomalies sécurisées</div>
+    <div id="cases"></div>
+    <div id="quiz"></div>
+    <h2>Contrôles</h2>
+    <p class="legend">Glisser pour tourner autour du logement. Molette pour zoomer. Cliquer sur un objet marqué pour ouvrir sa décision métier.</p>
+    <button class="secondary" id="reset">Recommencer</button>
+  </aside>
+</div>
+<script type="module">
+import * as THREE from 'https://unpkg.com/three@0.170.0/build/three.module.js';
+import { OrbitControls } from 'https://unpkg.com/three@0.170.0/examples/jsm/controls/OrbitControls.js';
+
+const canvas=document.querySelector('#c');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.shadowMap.enabled=true;
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0xdbeafe);
+const camera=new THREE.PerspectiveCamera(50,1,.1,100);
+camera.position.set(8,6,9);
+const controls=new OrbitControls(camera,renderer.domElement);
+controls.target.set(0,1.3,0);controls.enableDamping=true;
+scene.add(new THREE.HemisphereLight(0xffffff,0x64748b,2.1));
+const sun=new THREE.DirectionalLight(0xffffff,2.4);sun.position.set(4,8,5);sun.castShadow=true;scene.add(sun);
+
+function box(name,pos,size,color){const g=new THREE.BoxGeometry(...size),m=new THREE.MeshStandardMaterial({color});const o=new THREE.Mesh(g,m);o.name=name;o.position.set(...pos);o.castShadow=o.receiveShadow=true;scene.add(o);return o}
+box('floor',[0,-.1,0],[8,.2,7],0xf1f5f9);
+box('backwall',[0,1.7,-3.4],[8,3.6,.2],0xe2e8f0);
+box('leftwall',[-3.9,1.7,0],[.2,3.6,7],0xe2e8f0);
+box('bathwall',[1.2,1.4,-1.25],[.15,2.8,4],0xcbd5e1);
+box('counter',[-2.4,.55,-1.9],[2.2,1.1,.8],0x94a3b8);
+box('boiler',[-2.8,2.15,-2.85],[.85,1.2,.38],0xf8fafc);
+box('panel',[2.55,1.8,-3.23],[.75,1,.24],0x1f2937);
+box('radiator',[2.4,.75,2.5],[1.8,.9,.25],0xf8fafc);
+box('sink',[2.3,.65,-1.9],[1.2,.6,.7],0xe2e8f0);
+box('vent',[.1,2.75,-3.24],[.9,.22,.15],0x64748b);
+
+const cases=[
+ {id:'gas',title:'Gaz',object:'boiler',color:0xb91c1c,question:'Une odeur de gaz est signalée près de la chaudière. Quelle réaction est la plus sûre ?',answers:['Allumer la lumière pour mieux voir','Aérer, éviter toute étincelle et faire sécuriser l’installation','Relancer la chaudière'],good:1,feedback:'Priorité à la mise en sécurité : ventilation, absence de source d’allumage et intervention compétente.'},
+ {id:'elec',title:'Électricité',object:'panel',color:0xea580c,question:'Le tableau présente un conducteur accessible. Que faites-vous ?',answers:['Vous le remettez en place vous-même','Vous considérez le risque électrique et faites contrôler par un professionnel','Vous le masquez avec un cache décoratif'],good:1,feedback:'Le rôle métier est d’identifier le danger et d’orienter vers un contrôle professionnel, pas de bricoler sous tension.'},
+ {id:'water',title:'Eau',object:'sink',color:0x1d4ed8,question:'Une fuite est visible sous le lavabo. Quelle première décision est pertinente ?',answers:['Ignorer tant que le débit est faible','Limiter le dégât, identifier l’origine apparente et déclencher l’intervention adaptée','Augmenter la pression'],good:1,feedback:'On sécurise et on qualifie le désordre avant d’orienter vers l’intervention adaptée.'},
+ {id:'heat',title:'Chauffage',object:'radiator',color:0xf59e0b,question:'Le radiateur reste froid alors que le chauffage est demandé. Quelle approche métier ?',answers:['Changer immédiatement la chaudière','Vérifier le contexte de fonctionnement et faire diagnostiquer si nécessaire','Condamner le logement'],good:1,feedback:'On distingue d’abord dysfonctionnement local, réglage et panne système avant d’escalader.'},
+ {id:'vent',title:'Ventilation',object:'vent',color:0x166534,question:'La bouche de ventilation est volontairement obstruée. Quel est le bon message ?',answers:['C’est sans effet si les fenêtres sont neuves','Il faut rétablir la circulation d’air pour limiter humidité et condensation','Il faut aussi boucher les entrées d’air'],good:1,feedback:'Une ventilation fonctionnelle est essentielle pour évacuer l’humidité et réduire le risque de condensation.'}
+];
+
+const interactives=[];
+for(const c of cases){
+ const obj=scene.getObjectByName(c.object); const marker=new THREE.Mesh(new THREE.SphereGeometry(.18,24,24),new THREE.MeshStandardMaterial({color:c.color,emissive:c.color,emissiveIntensity:1.4}));
+ marker.position.copy(obj.position).add(new THREE.Vector3(0,obj.geometry.parameters.height?obj.geometry.parameters.height/2+.35:.5,0));
+ marker.userData.caseId=c.id; scene.add(marker); interactives.push(marker);
+}
+let solved=new Set(),active=null;
+const casesEl=document.querySelector('#cases'),quizEl=document.querySelector('#quiz'),bar=document.querySelector('#bar'),status=document.querySelector('#status');
+function renderList(){casesEl.innerHTML=cases.map(c=>`<div class="case ${solved.has(c.id)?'done':''}"><h3>${solved.has(c.id)?'✓':'!'} ${c.title}</h3><div>${solved.has(c.id)?'Anomalie sécurisée':'À inspecter dans le logement'}</div></div>`).join('');bar.style.width=`${solved.size/cases.length*100}%`;status.textContent=`${solved.size} / ${cases.length} anomalies sécurisées`;if(solved.size===cases.length){quizEl.innerHTML='<div class="feedback"><strong>Porte déverrouillée.</strong><br>Vous avez sécurisé les cinq situations. Ce format peut devenir une séquence d’ouverture ou une évaluation scénarisée dans Storyline.</div>'}}
+function openCase(id){const c=cases.find(x=>x.id===id);active=c;quizEl.innerHTML=`<h2>${c.title}</h2><p>${c.question}</p><div class="answers">${c.answers.map((a,i)=>`<button data-i="${i}">${a}</button>`).join('')}</div><div id="fb"></div>`;quizEl.querySelectorAll('button').forEach(b=>b.onclick=()=>answer(+b.dataset.i));}
+function answer(i){const fb=document.querySelector('#fb');if(i===active.good){solved.add(active.id);fb.innerHTML=`<div class="feedback"><strong>Bonne décision.</strong> ${active.feedback}</div>`;renderList();}else fb.innerHTML='<div class="feedback alert">Décision risquée. Reprenez les indices techniques et cherchez l’action qui sécurise sans improviser une réparation.</div>';}
+renderList();
+
+const ray=new THREE.Raycaster(),mouse=new THREE.Vector2();
+renderer.domElement.addEventListener('pointerdown',e=>{const r=renderer.domElement.getBoundingClientRect();mouse.x=(e.clientX-r.left)/r.width*2-1;mouse.y=-((e.clientY-r.top)/r.height*2-1);ray.setFromCamera(mouse,camera);const hit=ray.intersectObjects(interactives)[0];if(hit)openCase(hit.object.userData.caseId)});
+
+document.querySelector('#reset').onclick=()=>{solved=new Set();quizEl.innerHTML='';renderList()};
+function resize(){const w=canvas.clientWidth,h=canvas.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}
+let t=0;function loop(){resize();t+=.03;interactives.forEach((m,i)=>{const s=1+Math.sin(t+i)*.18;m.scale.setScalar(s)});controls.update();renderer.render(scene,camera);requestAnimationFrame(loop)}loop();
+</script>
+</body>
+</html>
