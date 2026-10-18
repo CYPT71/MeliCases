@@ -16,7 +16,7 @@
   <canvas id="c"></canvas>
   <div id="ui">
     <header class="top"><div class="glass hud"><b>MELI<span class="accent">CASES</span></b><small id="levelName"></small></div><div class="glass hud stats"><span id="prog">0 / 20</span><span id="score">100%</span><span id="timer">25:00</span></div></header>
-    <div class="cross">+</div><div class="glass hint" id="hint">W avancer · E interagir · Échap pause</div>
+    <button id="overviewToggle" class="glass overview-toggle">EXPLORER À PIED</button><div class="cross">+</div><div class="glass hint" id="hint">W avancer · E interagir · Échap pause</div>
     <aside class="glass side"><b>CARNET DE DIAGNOSTIC</b><div id="roomName">Entrée</div><hr><span id="safety">Sécurité 100</span><button class="sound-toggle" id="soundToggle" aria-pressed="true">SON D’AMBIANCE · ACTIF</button><div class="director"><b>DIRECTEUR ADAPTATIF</b><div id="directorState">Observation...</div></div></aside>
     <section class="modal" id="modal"><div class="box question-box" id="dialog"></div></section>
     <section class="pause" id="pause"><div class="box"><div class="kicker">Mission suspendue</div><h1>PAUSE</h1><button id="resumePause" class="primary">REPRENDRE</button><button id="pauseOptions" class="secondary">OPTIONS</button><a class="menu" href="controls.html">COMMANDES</a><button id="restart">RECOMMENCER LA MISSION</button></div></section>
@@ -24,6 +24,7 @@
     <section class="start open" id="start"><div class="box"><div class="kicker">Simulation métier · Pré-diagnostic</div><h1>APPARTEMENT <span class="accent">SOUS DIAGNOSTIC</span></h1><p>Explorez un logement complet, inspectez les équipements et argumentez vos décisions techniques.</p><div class="mission-facts"><span><b>20</b> situations</span><span><b>5</b> domaines</span><span><b>25</b> minutes</span></div><button class="primary" id="play">ENTRER DANS L’APPARTEMENT</button><div class="menurow"><button id="startOptions" class="secondary">OPTIONS</button><a class="menu" href="controls.html">COMMANDES</a></div><a class="menu" href="trainer.html">CONSOLE FORMATEUR</a><a class="menu subtle" href="serious.html">MODE DOSSIER MÉTIER</a><div id="seedLabel"></div></div></section>
   </div>
   <script src="storyline/bridge.js"></script><script src="data/sound-engine.js"></script><script src="data/quiz-bank.js"></script><script src="data/feedback-bank.js"></script><script src="data/level-generator.js"></script><script src="data/mission-generator.js"></script><script src="data/simulation-engine.js"></script><script src="data/interaction-system.js"></script><script src="data/collision-system.js"></script><script src="data/apartment-kit.js"></script><script src="data/progression-engine.js"></script><script src="data/objective-engine.js"></script><script src="data/adaptive-director.js"></script>
+  <script type="importmap">{"imports":{"three":"./assets/vendor/three/three.module.js"}}</script>
   <script type="module" src="game-runtime.js"></script>
 </body>
 </html>
