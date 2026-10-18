@@ -23,3 +23,21 @@ test('le mobilier forme des ensembles cohérents sans chevauchements majeurs',as
   expect(result.overlaps).toEqual([]);
   expect(result.tv[2]).toBeLessThan(result.sofa[2]);
 });
+
+test('les meubles détaillés regardent leur zone d’usage et restent dans leur pièce',async({page})=>{
+  await page.goto('/game.html?seed=ORIENTATION');
+  const result=await page.evaluate(()=>{
+    const byId=id=>MELI_FURNITURE.find(item=>item.id===id);
+    const expected={sofa_main:'north',tv_main:'south',bookcase_main:'north',wardrobe_main:'east',fridge_main:'west',desk_main:'south',vanity_main:'south',wc_main:'north'};
+    const wrongFacing=Object.entries(expected).filter(([id,facing])=>byId(id)?.facing!==facing);
+    const outside=MELI_FURNITURE.filter(item=>{
+      const room=MELI_ROOM_ZONES.find(zone=>zone.id===item.room);if(!room)return false;
+      return Math.abs(item.p[0]-room.p[0])>room.s[0]/2+.2||Math.abs(item.p[2]-room.p[2])>room.s[2]/2+.2;
+    }).map(item=>item.id);
+    return{wrongFacing,outside,sofaRotation:window.__MELI_TEST__.furnitureRotation('sofa_main'),tvRotation:window.__MELI_TEST__.furnitureRotation('tv_main')};
+  });
+  expect(result.wrongFacing).toEqual([]);
+  expect(result.outside).toEqual([]);
+  expect(Math.abs(result.sofaRotation-Math.PI)).toBeLessThan(.001);
+  expect(Math.abs(result.tvRotation)).toBeLessThan(.001);
+});
