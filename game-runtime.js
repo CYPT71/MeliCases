@@ -31,13 +31,13 @@ document.querySelectorAll('[data-level]').forEach(card=>{
 });
 function navigateStage(id){const next=new URL(location.href);next.searchParams.set('level',id);next.searchParams.set('seed',seed);location.href=next;}
 function renderMissionChoices(){
- $('missionChoices').innerHTML=level.id===2?Object.values(MeliCampaign.MISSIONS).map(m=>`<button data-mission="${m.id}" class="${m.id===activeMission?'selected':''}"><b>${m.label} · ${m.minutes} min</b><small>${m.description}${campaignProgress.completed[m.id]?' · Terminée':''}</small></button>`).join(''):'';
+ $('missionChoices').innerHTML=level.id===2?Object.values(MeliCampaign.MISSIONS).map(m=>`<button data-mission="${m.id}" class="${m.id===activeMission?'selected':''}"><b>${m.label} · À votre rythme</b><small>${m.description}${campaignProgress.completed[m.id]?' · Terminée':''}</small></button>`).join(''):'';
  document.querySelectorAll('[data-mission]').forEach(b=>b.onclick=()=>chooseMission(b.dataset.mission));
 }
 function chooseMission(id){if(!MeliCampaign.MISSIONS[id])return;activeMission=id;renderMissionChoices();update();adapt();}
 renderMissionChoices();
 $('selectedLevel').textContent=level.id===1?'Vous suivez des logements sans être spécialiste du bâtiment. Prenez en main le logement, découvrez la fiche puis répondez à cinq questions non notées.':level.id===2?'Choisissez une mission. Explorez les équipements, consultez des explications courtes et entraînez-vous à signaler les faits.':'Votre mission : visiter le logement B-307, repérer plusieurs points de vigilance et transmettre une fiche complète. Aucune aide ni correction avant transmission.';
-$('factSituations').textContent=level.total;$('factMissions').textContent=level.id===2?3:1;$('factTime').textContent=level.minutes;
+$('factSituations').textContent=level.total;$('factMissions').textContent=level.id===2?3:1;$('factTime').textContent='Libre';
 $('play').disabled=!stageAvailable();$('play').textContent=level.id===1?'COMMENCER LE BRIEFING':level.id===2?'COMMENCER LA MISSION':'À VOUS DE JOUER !';
 const tutorialSteps=[
   ['Votre mission commence ici !','Vous suivez des logements. Observez, analysez les informations et choisissez une suite adaptée : votre rôle est de repérer et signaler, sans intervenir comme un technicien.'],
@@ -170,7 +170,7 @@ function addFaultVisual(question,index){if(!question.fault)return;const anchor=M
   const ring=new THREE.Mesh(new THREE.TorusGeometry(.3,.018,8,32),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.8}));ring.rotation.x=Math.PI/2;ring.position.y=.03;group.add(ring);scene.add(group);const faultKind={gaz:'fault_gaz',electricite:'fault_electricite',eau:'fault_eau',chauffage:'fault_chauffage',ventilation:'fault_ventilation',humidite:'fault_ventilation'}[question.fault.topic]||'fault_ventilation';loadMeliModel(THREE,faultKind).then(model=>{model.scale.setScalar(.72);model.position.y=.18;group.add(model);group.userData.detailedFault=true});faultVisuals.push(group)}
 if(level.id===3)level.questions.forEach(addFaultVisual);
 
-let done=new Set(Object.keys(campaignProgress.answers[level.id]||{}).map(Number)),mistakes=0,streakErrors=0,started=false,paused=false,modalOpen=false,active,activeAction='',time=level.minutes*60,questionStart=0,lastPlan=null,selected=new Set(),reportSubmitted=false;
+let done=new Set(Object.keys(campaignProgress.answers[level.id]||{}).map(Number)),mistakes=0,streakErrors=0,started=false,paused=false,modalOpen=false,active,activeAction='',questionStart=0,lastPlan=null,selected=new Set(),reportSubmitted=false;
 const keys={};
 const roomNames={entree:'Entrée',cuisine:'Cuisine',sdb:'Salle d’eau',salon:'Séjour',chambre:'Chambre',wc:'WC'};
 function update(){
