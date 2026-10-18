@@ -1,26 +1,31 @@
 name: Playwright E2E
 on:
   push:
-    branches: [main]
   pull_request:
     branches: [main]
   workflow_dispatch:
+concurrency:
+  group: playwright-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   test:
-    timeout-minutes: 10
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
-      - run: npm install
-      - run: npx playwright install --with-deps chromium
-      - run: npm run test:e2e
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run Playwright suite
+        run: npm run test:e2e
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: playwright-report
+          name: playwright-report-${{ github.run_id }}
           path: playwright-report/
+          if-no-files-found: ignore
           retention-days: 14
