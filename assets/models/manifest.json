@@ -1,0 +1,198 @@
+{
+  "version": 1,
+  "format": "gltf-2.0",
+  "collision": "The runtime keeps separate invisible coarse collision boxes.",
+  "models": {
+    "bed": {
+      "file": "bed.gltf",
+      "parts": 22,
+      "texture": "linen"
+    },
+    "wardrobe": {
+      "file": "wardrobe.gltf",
+      "parts": 13,
+      "texture": "wood"
+    },
+    "sofa": {
+      "file": "sofa.gltf",
+      "parts": 21,
+      "texture": "fabric"
+    },
+    "fridge": {
+      "file": "fridge.gltf",
+      "parts": 7,
+      "texture": null
+    },
+    "tv": {
+      "file": "tv.gltf",
+      "parts": 6,
+      "texture": null
+    },
+    "plant": {
+      "file": "plant.gltf",
+      "parts": 16,
+      "texture": null
+    },
+    "bike": {
+      "file": "bike.gltf",
+      "parts": 29,
+      "texture": null
+    },
+    "mirror": {
+      "file": "mirror.gltf",
+      "parts": 6,
+      "texture": null
+    },
+    "shower": {
+      "file": "shower.gltf",
+      "parts": 14,
+      "texture": null
+    },
+    "wc": {
+      "file": "wc.gltf",
+      "parts": 6,
+      "texture": null
+    },
+    "kitchen": {
+      "file": "kitchen.gltf",
+      "parts": 11,
+      "texture": "wood"
+    },
+    "cabinet": {
+      "file": "cabinet.gltf",
+      "parts": 10,
+      "texture": "wood"
+    },
+    "island": {
+      "file": "island.gltf",
+      "parts": 16,
+      "texture": "wood"
+    },
+    "bookcase": {
+      "file": "bookcase.gltf",
+      "parts": 28,
+      "texture": "wood"
+    },
+    "desk": {
+      "file": "desk.gltf",
+      "parts": 10,
+      "texture": "wood"
+    },
+    "vanity": {
+      "file": "vanity.gltf",
+      "parts": 13,
+      "texture": "wood"
+    },
+    "table": {
+      "file": "table.gltf",
+      "parts": 10,
+      "texture": "wood"
+    },
+    "pillow": {
+      "file": "pillow.gltf",
+      "parts": 11,
+      "texture": "linen"
+    },
+    "rug": {
+      "file": "rug.gltf",
+      "parts": 40,
+      "texture": "rug"
+    },
+    "backsplash": {
+      "file": "backsplash.gltf",
+      "parts": 30,
+      "texture": "tile"
+    },
+    "wallart": {
+      "file": "wallart.gltf",
+      "parts": 7,
+      "texture": "fabric"
+    },
+    "curtain": {
+      "file": "curtain.gltf",
+      "parts": 20,
+      "texture": "fabric"
+    },
+    "towel": {
+      "file": "towel.gltf",
+      "parts": 11,
+      "texture": "fabric"
+    },
+    "radiator": {
+      "file": "radiator.gltf",
+      "parts": 7,
+      "texture": null
+    },
+    "lamp": {
+      "file": "lamp.gltf",
+      "parts": 13,
+      "texture": null
+    },
+    "boiler": {
+      "file": "boiler.gltf",
+      "parts": 13,
+      "texture": null,
+      "technical": true
+    },
+    "stove": {
+      "file": "stove.gltf",
+      "parts": 10,
+      "texture": null,
+      "technical": true
+    },
+    "panel": {
+      "file": "panel.gltf",
+      "parts": 7,
+      "texture": null,
+      "technical": true
+    },
+    "socket": {
+      "file": "socket.gltf",
+      "parts": 5,
+      "texture": null,
+      "technical": true
+    },
+    "plan": {
+      "file": "plan.gltf",
+      "parts": 8,
+      "texture": null,
+      "technical": true
+    },
+    "meter": {
+      "file": "meter.gltf",
+      "parts": 9,
+      "texture": null,
+      "technical": true
+    },
+    "pipe": {
+      "file": "pipe.gltf",
+      "parts": 3,
+      "texture": null,
+      "technical": true
+    },
+    "tap": {
+      "file": "tap.gltf",
+      "parts": 4,
+      "texture": null,
+      "technical": true
+    },
+    "window_inlet": {
+      "file": "window_inlet.gltf",
+      "parts": 10,
+      "texture": null,
+      "technical": true
+    },
+    "wall": {
+      "file": "wall.gltf",
+      "parts": 10,
+      "texture": null,
+      "technical": true
+    },
+    "vent": {
+      "file": "vent.gltf",
+      "parts": 8,
+      "texture": null,
+      "technical": true
+    }
+  }
+}

@@ -1,4 +1,5 @@
-﻿// Modèles techniques légers, attachés au même registre que les situations.
+﻿import {loadMeliModel} from './gltf-model-loader.js';
+// Modèles techniques glTF attachés au même registre que les situations.
 export function buildEquipment(THREE,scene,registry){
  const roots=new Map();
  const mat=color=>new THREE.MeshStandardMaterial({color,roughness:.6,metalness:.15});
@@ -21,6 +22,7 @@ export function buildEquipment(THREE,scene,registry){
     case 'wall':box(root,'surface',[0,0,0],[.5,.6,.025]);for(let i=0;i<4;i++)box(root,'droplet_'+i,[-.15+i*.1,.12-i*.07,.025],[.025,.065,.018],'blue');break;
     default:box(root,'frame',[0,0,0],[.42,.22,.07]);for(let i=0;i<5;i++)box(root,'slat_'+i,[0,-.075+i*.038,.05],[.34,.012,.025],'dark');
    }
+   const fallback=[...root.children];loadMeliModel(THREE,spec.kind).then(model=>{fallback.forEach(x=>x.visible=false);root.add(model);root.userData.gltfLoaded=true}).catch(error=>console.error('Modèle technique',spec.kind,error));
   }
   root.userData.equipmentId=id;root.userData.equipmentLabel=spec.label;roots.set(id,root);
  }
