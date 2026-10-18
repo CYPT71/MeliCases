@@ -130,19 +130,19 @@
     },
     "boiler": {
       "file": "boiler.gltf",
-      "parts": 13,
+      "parts": 20,
       "texture": null,
       "technical": true
     },
     "stove": {
       "file": "stove.gltf",
-      "parts": 10,
+      "parts": 12,
       "texture": null,
       "technical": true
     },
     "panel": {
       "file": "panel.gltf",
-      "parts": 7,
+      "parts": 23,
       "texture": null,
       "technical": true
     },
@@ -154,13 +154,13 @@
     },
     "plan": {
       "file": "plan.gltf",
-      "parts": 8,
+      "parts": 18,
       "texture": null,
       "technical": true
     },
     "meter": {
       "file": "meter.gltf",
-      "parts": 9,
+      "parts": 12,
       "texture": null,
       "technical": true
     },
@@ -193,6 +193,46 @@
       "parts": 8,
       "texture": null,
       "technical": true
+    },
+    "certificate_gas": {
+      "file": "certificate_gas.gltf",
+      "parts": 14,
+      "storytelling": true
+    },
+    "consuel": {
+      "file": "consuel.gltf",
+      "parts": 14,
+      "storytelling": true
+    },
+    "incident_report": {
+      "file": "incident_report.gltf",
+      "parts": 16,
+      "storytelling": true
+    },
+    "fault_gaz": {
+      "file": "fault_gaz.gltf",
+      "parts": 10,
+      "storytelling": true
+    },
+    "fault_electricite": {
+      "file": "fault_electricite.gltf",
+      "parts": 11,
+      "storytelling": true
+    },
+    "fault_eau": {
+      "file": "fault_eau.gltf",
+      "parts": 11,
+      "storytelling": true
+    },
+    "fault_chauffage": {
+      "file": "fault_chauffage.gltf",
+      "parts": 4,
+      "storytelling": true
+    },
+    "fault_ventilation": {
+      "file": "fault_ventilation.gltf",
+      "parts": 14,
+      "storytelling": true
     }
   }
 }
