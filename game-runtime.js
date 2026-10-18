@@ -14,6 +14,12 @@ const canvas=$('c'),renderer=new THREE.WebGLRenderer({canvas,antialias:true,powe
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;
 const scene=new THREE.Scene();scene.background=new THREE.Color(0xb8d4dc);scene.fog=new THREE.Fog(0xb8d4dc,20,46);
 const camera=new THREE.PerspectiveCamera(68,1,.1,80);camera.position.set(.4,1.65,5.7);const pointer=new PointerLockControls(camera,document.body);scene.add(camera);
+function lockPointer(){
+  try{
+    const request=pointer.domElement.requestPointerLock();
+    if(request?.catch)request.catch(()=>{});
+  }catch{}
+}
 // Orthographic dollhouse view shares the interactive apartment geometry.
 const overviewCamera=new THREE.OrthographicCamera(-12,12,12,-12,.1,100);
 overviewCamera.position.set(19,22,25);overviewCamera.lookAt(0,.5,0);
@@ -30,7 +36,7 @@ function setOverview(enabled){
   scene.background.set(enabled?0xffffff:0xb8d4dc);scene.fog=enabled?null:new THREE.Fog(0xb8d4dc,20,46);
   $('overviewToggle').textContent=enabled?'EXPLORER À PIED':'V · VUE D’ENSEMBLE';
   document.body.classList.toggle('overview-mode',enabled);
-  if(enabled)pointer.unlock();else if(started&&!paused&&!modalOpen)pointer.lock();
+  if(enabled)pointer.unlock();else if(started&&!paused&&!modalOpen)lockPointer();
 }
 $('overviewToggle').onclick=()=>setOverview(!overview);
 
@@ -100,13 +106,13 @@ function adapt(){lastPlan=director.plan(director.evaluate(mastery.snapshot(),{sa
 function openQuestion(q){active=q;selected.clear();questionStart=performance.now();modalOpen=true;sound.cue('inspect');pointer.unlock();$('modal').classList.add('open');renderQuestion()}
 function renderQuestion(){const multi=active.correct.length>1;$('dialog').innerHTML=`<div class="case-meta"><span>${active.topic}</span><span>${active.room}</span><span>${multi?'Plusieurs réponses':'Une réponse'}</span></div><h2>${active.question}</h2><div class="answers">${active.choices.map((choice,i)=>`<button class="answer ${selected.has(i)?'selected':''}" data-i="${i}"><i>${selected.has(i)?'✓':''}</i>${choice}</button>`).join('')}</div><button class="primary" id="validateAnswer" ${selected.size?'':'disabled'}>VALIDER MA DÉCISION</button><div id="fb"></div>`;document.querySelectorAll('[data-i]').forEach(button=>button.onclick=()=>{const index=+button.dataset.i;if(!multi)selected.clear();selected.has(index)?selected.delete(index):selected.add(index);renderQuestion()});$('validateAnswer').onclick=answer}
 function answer(){const chosen=[...selected].sort((a,b)=>a-b),expected=[...active.correct].sort((a,b)=>a-b),ok=chosen.length===expected.length&&chosen.every((v,i)=>v===expected[i]),feedback=MELI_FEEDBACK[active.id];sound.cue(ok?'correct':'error');mastery.record(active,ok,{time:(performance.now()-questionStart)/1000,safe:ok});MeliCasesStoryline.decision({questionId:active.id,correct:ok,confidence:'non-déclarée',topic:active.topic,score:Math.round(done.size/(done.size+mistakes||1)*100),safety:simState.score.safety});if(ok){streakErrors=0;done.add(active.id);objectives.complete(active.id);const object=questionObjects.find(item=>item.name===`indice_${active.id}`);if(object){object.visible=false;interactions.setEnabled(object.name,false)}adapt();MeliCasesStoryline.caseSolved(active.id,done.size,level.total,{topic:active.topic,safety:simState.score.safety});$('fb').className='feedback ok';$('fb').innerHTML=`<h3>Décision validée</h3><p>${feedback.explanation}</p><p class="source">Support métier · ${feedback.source}</p><button id="back">CONSIGNER ET CONTINUER</button>`;$('back').onclick=closeQuestion;if(done.size===level.total)MeliCasesStoryline.completed(seed,{score:Math.round(done.size/(done.size+mistakes)*100),safety:simState.score.safety,solved:done.size,passed:true})}else{mistakes++;streakErrors++;simState.score.safety=Math.max(0,simState.score.safety-2);adapt();$('fb').className='feedback bad';$('fb').innerHTML=`<h3>Décision à revoir</h3><p>${feedback.error}</p><p><b>Réponse attendue :</b> ${active.correct.map(i=>active.choices[i]).join(' + ')}</p><p>${feedback.explanation}</p><p class="source">Support métier · ${feedback.source}</p><button id="retry">CORRIGER MA DÉCISION</button>`;$('retry').onclick=()=>{selected.clear();renderQuestion()}}document.querySelectorAll('.answer,#validateAnswer').forEach(button=>button.disabled=true);update()}
-function closeQuestion(){$('modal').classList.remove('open');modalOpen=false;pointer.lock()}
-function showOptions(){pointer.unlock();$('options').classList.add('open')}function hideOptions(){$('options').classList.remove('open');if(started&&!paused)pointer.lock()}
+function closeQuestion(){$('modal').classList.remove('open');modalOpen=false;lockPointer()}
+function showOptions(){pointer.unlock();$('options').classList.add('open')}function hideOptions(){$('options').classList.remove('open');if(started&&!paused)lockPointer()}
 $('soundToggle').ariaPressed=String(sound.enabled);$('soundToggle').textContent=`SON D’AMBIANCE · ${sound.enabled?'ACTIF':'COUPÉ'}`;
 $('soundToggle').onclick=()=>{const enabled=sound.toggle();$('soundToggle').ariaPressed=String(enabled);$('soundToggle').textContent=`SON D’AMBIANCE · ${enabled?'ACTIF':'COUPÉ'}`};
 $('startOptions').onclick=showOptions;$('pauseOptions').onclick=showOptions;$('closeOptions').onclick=hideOptions;$('restart').onclick=()=>location.reload();document.querySelectorAll('[data-quality]').forEach(button=>button.onclick=()=>{const quality=button.dataset.quality;localStorage.setItem('meli.quality',quality);renderer.setPixelRatio(quality==='eco'?1:quality==='high'?Math.min(devicePixelRatio,2):Math.min(devicePixelRatio,1.5));renderer.shadowMap.enabled=quality!=='eco';rendered.forEach(object=>{object.castShadow=quality==='high';object.receiveShadow=quality!=='eco'})});
-$('play').onclick=()=>{$('start').classList.remove('open');started=true;setOverview(false);sound.unlock();sound.cue('start');adapt();MeliCasesStoryline.ready(seed,{difficulty})};$('resumePause').onclick=()=>{paused=false;$('pause').classList.remove('open');pointer.lock()};
-addEventListener('keydown',event=>{if(event.code==='KeyV'&&started&&!paused&&!modalOpen){setOverview(!overview);return}if(event.code===controls.pause&&started&&!modalOpen){paused=!paused;$('pause').classList.toggle('open',paused);paused?pointer.unlock():pointer.lock();return}if(paused||modalOpen)return;keys[event.code]=true;if(event.code===controls.interact){const item=interactions.itemFrom(interactions.focus());if(item?.type==='question')openQuestion(item.data.question)}});addEventListener('keyup',event=>keys[event.code]=false);
+$('play').onclick=()=>{$('start').classList.remove('open');started=true;setOverview(false);sound.unlock();sound.cue('start');adapt();MeliCasesStoryline.ready(seed,{difficulty})};$('resumePause').onclick=()=>{paused=false;$('pause').classList.remove('open');lockPointer()};
+addEventListener('keydown',event=>{if(event.code==='KeyV'&&started&&!paused&&!modalOpen){setOverview(!overview);return}if(event.code===controls.pause&&started&&!modalOpen){paused=!paused;$('pause').classList.toggle('open',paused);paused?pointer.unlock():lockPointer();return}if(paused||modalOpen)return;keys[event.code]=true;if(event.code===controls.interact){const item=interactions.itemFrom(interactions.focus());if(item?.type==='question')openQuestion(item.data.question)}});addEventListener('keyup',event=>keys[event.code]=false);
 
 function currentRoom(){const p=camera.position;return MELI_ROOM_ZONES.filter(r=>Math.abs(p.x-r.p[0])<=r.s[0]/2&&Math.abs(p.z-r.p[2])<=r.s[2]/2).sort((a,b)=>a.s[0]*a.s[2]-b.s[0]*b.s[2])[0]?.id||'circulation'}
 function insideApartment(x,z){return Math.abs(x)<=6.42&&Math.abs(z)<=6.42}
