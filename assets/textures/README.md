@@ -8,6 +8,7 @@ Ces six textures ont été générées spécifiquement pour MeliCases avec OpenA
 | `ceramic-tile.webp` | Sols et crédences carrelés | Céramique bleu-gris pâle, joints fins, finition résidentielle, raccordable |
 | `plaster-wall.webp` | Murs peints et enduits | Enduit minéral blanc cassé, grain de taloche subtil, raccordable |
 | `woven-fabric.webp` | Canapé, literie et textiles | Tissu corail/terre cuite, tissage lin visible, raccordable |
+| `bed-linen-green.webp` | Couvre-lit | Coton-lin vert mousse, rayures olive, anis et crème, raccordable |
 | `geometric-rug.webp` | Tapis | Motif géométrique ocre, corail, crème et bleu nuit, laine tissée, raccordable |
 | `terrazzo.webp` | Circulations et zones minérales | Terrazzo ivoire, éclats sable, terre cuite, sauge et gris, raccordable |
 | `exterior-courtyard.webp` | Fenêtres chambre et séjour | Cour résidentielle française arborée, façades en pierre claire, lumière diffuse |

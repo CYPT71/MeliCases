@@ -1,6 +1,6 @@
 const {test,expect}=require('@playwright/test');
 
-const textures=['oak-parquet','ceramic-tile','plaster-wall','woven-fabric','geometric-rug','terrazzo'];
+const textures=['oak-parquet','ceramic-tile','plaster-wall','woven-fabric','bed-linen-green','geometric-rug','terrazzo'];
 
 test('les textures image optimisées sont livrées et chargées dans la scène 3D',async({page,request})=>{
   for(const name of textures){
@@ -10,7 +10,7 @@ test('les textures image optimisées sont livrées et chargées dans la scène 3
     expect((await response.body()).length,name).toBeGreaterThan(20_000);
   }
   await page.goto('/game.html?seed=TEXTURES');
-  await expect.poll(()=>page.evaluate(()=>window.__MELI_TEST__?.loadedImageTextures),{timeout:15_000}).toBe(7);
+  await expect.poll(()=>page.evaluate(()=>window.__MELI_TEST__?.loadedImageTextures),{timeout:15_000}).toBe(8);
   const architecture=await page.evaluate(()=>window.__MELI_TEST__.architecture);
-  expect(architecture.imageTextures).toBe(7);
+  expect(architecture.imageTextures).toBe(8);
 });
