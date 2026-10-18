@@ -1,6 +1,6 @@
 const {test,expect}=require('@playwright/test');
 
-test('les pièces utilisent des détails de matière procéduraux',async({page})=>{
+test('les pièces utilisent des textures image et des détails de matière',async({page})=>{
   await page.goto('/game.html?seed=TEXTURE-DETAIL');
   const detail=await page.evaluate(()=>({
     furniture:MELI_FURNITURE.length,
